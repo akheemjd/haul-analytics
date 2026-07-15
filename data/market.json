@@ -1,1 +1,37 @@
-{"indicators":[]}
+{
+  "indicators": [
+    {
+      "label": "Unemployment",
+      "value": "4.2%",
+      "detail": "US unemployment \u2014 June 2026",
+      "direction": "down",
+      "what_it_means": "Tight labor market means higher driver wages and recruiting costs for fleets.",
+      "source": "Bureau of Labor Statistics"
+    },
+    {
+      "label": "Avg Hourly Earnings",
+      "value": "$37.64",
+      "detail": "Private sector \u2014 June 2026",
+      "direction": "up",
+      "what_it_means": "Rising wages pressure fleet operating margins. Driver pay is the largest cost after fuel.",
+      "source": "Bureau of Labor Statistics"
+    },
+    {
+      "label": "Diesel PPI",
+      "value": "475.7",
+      "detail": "Producer Price Index \u2014 June 2026",
+      "direction": "up",
+      "what_it_means": "Wholesale diesel prices trending. Downstream pump prices typically follow within 2-4 weeks.",
+      "source": "Bureau of Labor Statistics"
+    },
+    {
+      "label": "Consumer Prices (CPI)",
+      "value": "334.0",
+      "detail": "All items index \u2014 June 2026",
+      "direction": "up",
+      "what_it_means": "General inflation trends affect equipment costs, insurance, and operating expenses.",
+      "source": "Bureau of Labor Statistics"
+    }
+  ],
+  "updated": "2026-07-15T19:37:57"
+}
