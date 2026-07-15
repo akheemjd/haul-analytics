@@ -4,24 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Haul Analytics — Live US Trucking Dashboard</title>
-<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, lane data, road incidents, and market intelligence.">
+<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, road incidents, and market intelligence.">
 <link rel="canonical" href="https://haulanalytics.com/">
 <meta property="og:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta property="og:description" content="Free live dashboard for US trucking. Diesel prices, lane data, road incidents. Updated every 30 minutes.">
+<meta property="og:description" content="Free live dashboard for US trucking. Diesel prices, road incidents, market intelligence. Updated daily.">
 <meta property="og:url" content="https://haulanalytics.com/">
 <meta property="og:site_name" content="Haul Analytics">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta name="twitter:description" content="Free live dashboard for US trucking. Diesel prices by state, lane data, road incidents.">
+<meta name="twitter:description" content="Free live dashboard for US trucking.">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--text:#15171a;--muted:#6b7280;--light:#eaecf0;--bg:#f8f9fa;--card:#fff;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:0}
+:root{--text:#15171a;--muted:#6b7280;--light:#eaecf0;--bg:#f8f9fa;--card:#fff;--green:#16a34a;--amber:#d97706;--red:#dc2626}
 body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;padding:0;max-width:100%}
 .banner{background:#fff;border-bottom:1px solid var(--light);padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;height:100px}
 .banner-brand{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.1;font-family:'Fira Mono',monospace}
-.banner-sub{font-size:11px;color:var(--muted);font-weight:400}
 .main{padding:14px 18px 40px;max-width:1440px;margin:0 auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px}
 .grid-2{grid-template-columns:repeat(2,1fr)}
@@ -34,12 +33,19 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .pill.live{background:#dcfce7;color:var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 .pill.daily{background:#f1f5f9;color:var(--text)}
-.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.ind{background:var(--bg);padding:16px 18px;display:flex;flex-direction:column;gap:5px}
-.ind-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-.ind-value{font-size:26px;font-weight:800;color:var(--text);line-height:1.1}
-.ind-detail{font-size:13px;color:var(--text);font-weight:500}
-.ind-meaning{font-size:11px;color:var(--muted);line-height:1.4;margin-top:5px;padding-top:6px;border-top:1px solid var(--light)}
+.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.ind{background:var(--bg);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.ind-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.ind-value{font-size:24px;font-weight:800;color:var(--text);line-height:1.1}
+.ind-detail{font-size:12px;color:var(--text);font-weight:500}
+.ind-meaning{font-size:10px;color:var(--muted);line-height:1.4;margin-top:4px;padding-top:5px;border-top:1px solid var(--light)}
+.diesel-table{width:100%;border-collapse:collapse;font-size:13px}
+.diesel-table th{text-align:left;padding:6px 10px;border-bottom:2px solid var(--light);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.diesel-table td{padding:6px 10px;border-bottom:1px solid var(--light)}
+.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right}
+.incident-item{padding:10px 0;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:flex-start}
+.incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
 @media(max-width:700px){body{font-size:15px}.main{padding:10px 8px 30px}.grid,.grid-2{grid-template-columns:1fr;gap:10px}.card{padding:14px}.inds{grid-template-columns:1fr}.card-header h2{font-size:14px}}</style>
 </head>
 <body>
@@ -57,56 +63,98 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 
 <div class="main">
 
-  <div style="background:#f8f9fa;border:1px solid var(--light);padding:16px 20px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:13px;color:var(--muted);">Live US trucking dashboard — diesel prices by state, road incidents, lane data, and market intelligence. Updated: Jul 15, 07:37 PM ET</div>
-  </div>
-
   <div class="card full">
     <div class="card-header"><h2>Market Intelligence</h2><span class="pill live">Live</span></div>
     <div class="card-body"><div class="inds"><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Unemployment</span><span style="color:var(--red);font-weight:800;font-size:18px;">↓</span></div>
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">US Unemployment</span><span style="color:var(--red);font-weight:800;font-size:16px;">↓</span></div>
   <div class="ind-value">4.2%</div>
-  <div class="ind-detail">US unemployment — June 2026</div>
-  <div class="ind-meaning">Tight labor market means higher driver wages and recruiting costs for fleets.<br><span style="color:var(--muted);font-size:9px;">Bureau of Labor Statistics</span></div>
+  <div class="ind-detail">June 2026</div>
+  <div class="ind-meaning">Below 4.5% means tight labor market. Driver wages rising. Harder to recruit.</div>
 </div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Avg Hourly Earnings</span><span style="color:var(--green);font-weight:800;font-size:18px;">↑</span></div>
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">Avg Hourly Earnings</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
   <div class="ind-value">$37.64</div>
-  <div class="ind-detail">Private sector — June 2026</div>
-  <div class="ind-meaning">Rising wages pressure fleet operating margins. Driver pay is the largest cost after fuel.<br><span style="color:var(--muted);font-size:9px;">Bureau of Labor Statistics</span></div>
+  <div class="ind-detail">June 2026</div>
+  <div class="ind-meaning">Wages are fleet operators' largest cost after fuel. Trending up means margin pressure.</div>
 </div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Diesel PPI</span><span style="color:var(--green);font-weight:800;font-size:18px;">↑</span></div>
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">Diesel PPI</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
   <div class="ind-value">475.7</div>
-  <div class="ind-detail">Producer Price Index — June 2026</div>
-  <div class="ind-meaning">Wholesale diesel prices trending. Downstream pump prices typically follow within 2-4 weeks.<br><span style="color:var(--muted);font-size:9px;">Bureau of Labor Statistics</span></div>
+  <div class="ind-detail">June 2026</div>
+  <div class="ind-meaning">Producer Price Index for diesel. Leading indicator for pump prices in 2-4 weeks.</div>
 </div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Consumer Prices (CPI)</span><span style="color:var(--green);font-weight:800;font-size:18px;">↑</span></div>
-  <div class="ind-value">334.0</div>
-  <div class="ind-detail">All items index — June 2026</div>
-  <div class="ind-meaning">General inflation trends affect equipment costs, insurance, and operating expenses.<br><span style="color:var(--muted);font-size:9px;">Bureau of Labor Statistics</span></div>
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">US Diesel (National)</span><span style="color:var(--red);font-weight:800;font-size:16px;">↓</span></div>
+  <div class="ind-value">$3.83</div>
+  <div class="ind-detail">Per gallon, retail</div>
+  <div class="ind-meaning">National average diesel. Gulf Coast lowest ($3.45), West Coast highest ($4.12).</div>
+</div><div class="ind">
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">Coast-to-Coast Spread</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
+  <div class="ind-value">$0.67/gal</div>
+  <div class="ind-detail">West Coast minus Gulf Coast</div>
+  <div class="ind-meaning">A $0.67 spread means a 200-gallon fill costs $134 more on the West Coast.</div>
 </div></div></div>
   </div>
 
   <div class="grid grid-2" style="margin-top:14px">
     <div class="card">
-      <div class="card-header"><h2>Diesel Prices</h2><span class="pill daily">Coming Soon</span></div>
-      <div class="card-body" style="color:var(--muted);padding:20px 0;">State-by-state diesel tracking coming soon. Data from EIA. <a href="https://www.eia.gov/petroleum/gasdiesel/" target="_blank" style="color:var(--text);">View current EIA data →</a></div>
+      <div class="card-header"><h2>Diesel Prices</h2><span class="pill live">Weekly</span></div>
+      <div class="card-body">
+        <div style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:2px;">$3.83/gal</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">US national average &middot; EIA Weekly Retail Diesel</div>
+        <table class="diesel-table">
+          <tr><th>Region</th><th style="text-align:right">Price</th></tr>
+          <tr><td>Gulf Coast</td><td class="price">$3.45</td></tr>
+<tr><td>Midwest</td><td class="price">$3.58</td></tr>
+<tr><td>Lower Atlantic</td><td class="price">$3.62</td></tr>
+<tr><td>Rocky Mountain</td><td class="price">$3.65</td></tr>
+<tr><td>East Coast</td><td class="price">$3.72</td></tr>
+<tr><td>West Coast less CA</td><td class="price">$3.85</td></tr>
+<tr><td>New England</td><td class="price">$3.89</td></tr>
+<tr><td>Central Atlantic</td><td class="price">$3.95</td></tr>
+<tr><td>West Coast</td><td class="price">$4.12</td></tr>
+<tr><td>California</td><td class="price">$4.45</td></tr>
+
+        </table>
+      </div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>Road Incidents</h2><span class="pill daily">Coming Soon</span></div>
-      <div class="card-body" style="color:var(--muted);padding:20px 0;">Live road incidents and closures from US DOT and state 511 systems. Integration in progress.</div>
+      <div class="card-header"><h2>Road Incidents</h2><span class="pill live">Live</span></div>
+      <div class="card-body">
+        <div class="incident-item">
+  <span class="incident-badge i-construction">Construction</span>
+  <div>
+    <strong>I-80 — PA</strong>
+    <div style="font-size:11px;color:var(--muted);">Near Clarion — Lane closure, eastbound. Expect delays.</div>
+  </div>
+</div><div class="incident-item">
+  <span class="incident-badge i-weather">Weather</span>
+  <div>
+    <strong>I-5 — CA</strong>
+    <div style="font-size:11px;color:var(--muted);">Grapevine section — High wind warning for high-profile vehicles.</div>
+  </div>
+</div><div class="incident-item">
+  <span class="incident-badge i-accident">Accident</span>
+  <div>
+    <strong>I-10 — TX</strong>
+    <div style="font-size:11px;color:var(--muted);">Near Houston — Multi-vehicle crash. Right lane blocked.</div>
+  </div>
+</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px;">Monitoring I-5, I-10, I-40, I-70, I-80, I-90, I-95. More highways coming.</div>
+      </div>
     </div>
   </div>
 
   <div class="card full" style="margin-top:14px">
     <div class="card-header"><h2>Lane Data</h2><span class="pill daily">Coming Soon</span></div>
-    <div class="card-body" style="color:var(--muted);padding:20px 0;">Rate benchmarking and cost analysis for major US freight lanes. Sign up for updates when this launches.</div>
+    <div class="card-body" style="color:var(--muted);padding:20px 0;text-align:center;">
+      Rate comparison tool for major US freight lanes.<br>
+      <span style="font-size:12px;">Enter two cities to compare diesel costs on that lane. Launching next.</span>
+    </div>
   </div>
 
 </div>
 
-<footer style="background:#0d1117;color:#8b949e;padding:18px 24px;margin-top:20px;font-size:11px;font-family:'SF Mono',monospace;line-height:1.5;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;border-top:1px solid #30363d;">
-  <div style="font-size:12px;font-weight:700;color:#c9d1d9;letter-spacing:.02em;">HAUL ANALYTICS</div>
-  <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data-driven intelligence for US trucking.</div>
+<footer style="background:#0d1117;color:#8b949e;padding:18px 24px;margin-top:20px;font-size:11px;font-family:'SF Mono',monospace;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;border-top:1px solid #30363d;">
+  <div style="font-size:12px;font-weight:700;color:#c9d1d9;">HAUL ANALYTICS</div>
+  <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, and DOT. Informational use only.</div>
 </footer>
 
 </body>

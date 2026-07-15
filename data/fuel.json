@@ -1,1 +1,17 @@
-{"current":3.75,"change":0.02,"history":[]}
+{
+  "national_avg": 3.83,
+  "regions": {
+    "East Coast": 3.72,
+    "New England": 3.89,
+    "Central Atlantic": 3.95,
+    "Lower Atlantic": 3.62,
+    "Midwest": 3.58,
+    "Gulf Coast": 3.45,
+    "Rocky Mountain": 3.65,
+    "West Coast": 4.12,
+    "California": 4.45,
+    "West Coast less CA": 3.85
+  },
+  "updated": "2026-07-15T19:44:24",
+  "source": "EIA Weekly Retail Diesel"
+}

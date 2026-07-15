@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "highway": "I-80",
+    "state": "PA",
+    "location": "Near Clarion",
+    "type": "Construction",
+    "description": "Lane closure, eastbound. Expect delays.",
+    "status": "active",
+    "lat": 41.2,
+    "lon": -79.4
+  },
+  {
+    "highway": "I-5",
+    "state": "CA",
+    "location": "Grapevine section",
+    "type": "Weather",
+    "description": "High wind warning for high-profile vehicles.",
+    "status": "active",
+    "lat": 34.9,
+    "lon": -118.9
+  },
+  {
+    "highway": "I-10",
+    "state": "TX",
+    "location": "Near Houston",
+    "type": "Accident",
+    "description": "Multi-vehicle crash. Right lane blocked.",
+    "status": "active",
+    "lat": 29.8,
+    "lon": -95.4
+  }
+]

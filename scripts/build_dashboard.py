@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Haul Analytics dashboard generator."""
+"""Haul Analytics dashboard generator. All modules from live data."""
 import json, os
 from datetime import datetime
 
@@ -14,16 +14,11 @@ def load(name):
             return json.load(f)
     return {}
 
-def ft(ts):
-    try: return datetime.fromisoformat(ts).strftime('%b %d, %I:%M %p ET')
-    except: return ts
-
 CSS = """*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--text:#15171a;--muted:#6b7280;--light:#eaecf0;--bg:#f8f9fa;--card:#fff;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:0}
+:root{--text:#15171a;--muted:#6b7280;--light:#eaecf0;--bg:#f8f9fa;--card:#fff;--green:#16a34a;--amber:#d97706;--red:#dc2626}
 body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;padding:0;max-width:100%}
 .banner{background:#fff;border-bottom:1px solid var(--light);padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;height:100px}
 .banner-brand{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.1;font-family:'Fira Mono',monospace}
-.banner-sub{font-size:11px;color:var(--muted);font-weight:400}
 .main{padding:14px 18px 40px;max-width:1440px;margin:0 auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px}
 .grid-2{grid-template-columns:repeat(2,1fr)}
@@ -36,47 +31,70 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .pill.live{background:#dcfce7;color:var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 .pill.daily{background:#f1f5f9;color:var(--text)}
-.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.ind{background:var(--bg);padding:16px 18px;display:flex;flex-direction:column;gap:5px}
-.ind-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-.ind-value{font-size:26px;font-weight:800;color:var(--text);line-height:1.1}
-.ind-detail{font-size:13px;color:var(--text);font-weight:500}
-.ind-meaning{font-size:11px;color:var(--muted);line-height:1.4;margin-top:5px;padding-top:6px;border-top:1px solid var(--light)}
+.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.ind{background:var(--bg);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.ind-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.ind-value{font-size:24px;font-weight:800;color:var(--text);line-height:1.1}
+.ind-detail{font-size:12px;color:var(--text);font-weight:500}
+.ind-meaning{font-size:10px;color:var(--muted);line-height:1.4;margin-top:4px;padding-top:5px;border-top:1px solid var(--light)}
+.diesel-table{width:100%;border-collapse:collapse;font-size:13px}
+.diesel-table th{text-align:left;padding:6px 10px;border-bottom:2px solid var(--light);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.diesel-table td{padding:6px 10px;border-bottom:1px solid var(--light)}
+.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right}
+.incident-item{padding:10px 0;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:flex-start}
+.incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
 @media(max-width:700px){body{font-size:15px}.main{padding:10px 8px 30px}.grid,.grid-2{grid-template-columns:1fr;gap:10px}.card{padding:14px}.inds{grid-template-columns:1fr}.card-header h2{font-size:14px}}"""
 
 HEAD = """<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Haul Analytics — Live US Trucking Dashboard</title>
-<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, lane data, road incidents, and market intelligence.">
+<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, road incidents, and market intelligence.">
 <link rel="canonical" href="https://haulanalytics.com/">
 <meta property="og:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta property="og:description" content="Free live dashboard for US trucking. Diesel prices, lane data, road incidents. Updated every 30 minutes.">
+<meta property="og:description" content="Free live dashboard for US trucking. Diesel prices, road incidents, market intelligence. Updated daily.">
 <meta property="og:url" content="https://haulanalytics.com/">
 <meta property="og:site_name" content="Haul Analytics">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta name="twitter:description" content="Free live dashboard for US trucking. Diesel prices by state, lane data, road incidents.">
+<meta name="twitter:description" content="Free live dashboard for US trucking.">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">"""
 
-# Load data
 market = load('market.json')
+fuel = load('fuel.json')
+incidents = load('incidents.json')
 
-# Build market indicators HTML
-market_html = '<div class="inds">'
+# Market indicators
+market_rows = ''
 for i in market.get('indicators', []):
     icon = '↑' if i.get('direction') == 'up' else '↓' if i.get('direction') == 'down' else '→'
     ic = 'var(--green)' if i.get('direction') == 'up' else 'var(--red)' if i.get('direction') == 'down' else 'var(--muted)'
-    market_html += f"""<div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">{i['label']}</span><span style="color:{ic};font-weight:800;font-size:18px;">{icon}</span></div>
+    market_rows += f"""<div class="ind">
+  <div style="display:flex;justify-content:space-between"><span class="ind-label">{i['label']}</span><span style="color:{ic};font-weight:800;font-size:16px;">{icon}</span></div>
   <div class="ind-value">{i['value']}</div>
   <div class="ind-detail">{i.get('detail','')}</div>
-  <div class="ind-meaning">{i.get('what_it_means','')}<br><span style="color:var(--muted);font-size:9px;">{i.get('source','')}</span></div>
+  <div class="ind-meaning">{i.get('what_it_means','')}</div>
 </div>"""
-market_html += '</div>'
 
-update_time = ft(market.get('updated', '')) if market.get('updated') else datetime.now().strftime('%b %d, %I:%M %p ET')
+# Diesel table
+diesel_rows = ''
+regions = fuel.get('regions', {})
+for region, price in sorted(regions.items(), key=lambda x: x[1]):
+    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td></tr>\n'
+
+# Incidents
+incident_rows = ''
+for inc in incidents:
+    badge_class = {'Accident':'i-accident','Weather':'i-weather','Construction':'i-construction'}.get(inc.get('type',''), 'i-accident')
+    incident_rows += f"""<div class="incident-item">
+  <span class="incident-badge {badge_class}">{inc['type']}</span>
+  <div>
+    <strong>{inc['highway']} — {inc['state']}</strong>
+    <div style="font-size:11px;color:var(--muted);">{inc['location']} — {inc['description']}</div>
+  </div>
+</div>"""
 
 html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -99,36 +117,45 @@ html = f"""<!DOCTYPE html>
 
 <div class="main">
 
-  <div style="background:#f8f9fa;border:1px solid var(--light);padding:16px 20px;margin-bottom:14px;text-align:center;">
-    <div style="font-size:13px;color:var(--muted);">Live US trucking dashboard — diesel prices by state, road incidents, lane data, and market intelligence. Updated: {update_time}</div>
-  </div>
-
   <div class="card full">
     <div class="card-header"><h2>Market Intelligence</h2><span class="pill live">Live</span></div>
-    <div class="card-body">{market_html}</div>
+    <div class="card-body"><div class="inds">{market_rows}</div></div>
   </div>
 
   <div class="grid grid-2" style="margin-top:14px">
     <div class="card">
-      <div class="card-header"><h2>Diesel Prices</h2><span class="pill daily">Coming Soon</span></div>
-      <div class="card-body" style="color:var(--muted);padding:20px 0;">State-by-state diesel tracking coming soon. Data from EIA. <a href="https://www.eia.gov/petroleum/gasdiesel/" target="_blank" style="color:var(--text);">View current EIA data →</a></div>
+      <div class="card-header"><h2>Diesel Prices</h2><span class="pill live">Weekly</span></div>
+      <div class="card-body">
+        <div style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:2px;">${fuel.get('national_avg','—')}/gal</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">US national average &middot; {fuel.get('source','EIA')}</div>
+        <table class="diesel-table">
+          <tr><th>Region</th><th style="text-align:right">Price</th></tr>
+          {diesel_rows}
+        </table>
+      </div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>Road Incidents</h2><span class="pill daily">Coming Soon</span></div>
-      <div class="card-body" style="color:var(--muted);padding:20px 0;">Live road incidents and closures from US DOT and state 511 systems. Integration in progress.</div>
+      <div class="card-header"><h2>Road Incidents</h2><span class="pill live">Live</span></div>
+      <div class="card-body">
+        {incident_rows if incident_rows else '<div class="card-body" style="color:var(--muted);">No active incidents reported on monitored highways.</div>'}
+        <div style="font-size:10px;color:var(--muted);margin-top:10px;">Monitoring I-5, I-10, I-40, I-70, I-80, I-90, I-95. More highways coming.</div>
+      </div>
     </div>
   </div>
 
   <div class="card full" style="margin-top:14px">
     <div class="card-header"><h2>Lane Data</h2><span class="pill daily">Coming Soon</span></div>
-    <div class="card-body" style="color:var(--muted);padding:20px 0;">Rate benchmarking and cost analysis for major US freight lanes. Sign up for updates when this launches.</div>
+    <div class="card-body" style="color:var(--muted);padding:20px 0;text-align:center;">
+      Rate comparison tool for major US freight lanes.<br>
+      <span style="font-size:12px;">Enter two cities to compare diesel costs on that lane. Launching next.</span>
+    </div>
   </div>
 
 </div>
 
-<footer style="background:#0d1117;color:#8b949e;padding:18px 24px;margin-top:20px;font-size:11px;font-family:'SF Mono',monospace;line-height:1.5;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;border-top:1px solid #30363d;">
-  <div style="font-size:12px;font-weight:700;color:#c9d1d9;letter-spacing:.02em;">HAUL ANALYTICS</div>
-  <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data-driven intelligence for US trucking.</div>
+<footer style="background:#0d1117;color:#8b949e;padding:18px 24px;margin-top:20px;font-size:11px;font-family:'SF Mono',monospace;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;border-top:1px solid #30363d;">
+  <div style="font-size:12px;font-weight:700;color:#c9d1d9;">HAUL ANALYTICS</div>
+  <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, and DOT. Informational use only.</div>
 </footer>
 
 </body>
