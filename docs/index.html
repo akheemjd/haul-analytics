@@ -2,338 +2,410 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Haul Analytics — Live US Trucking Dashboard</title>
-<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, road incidents, and market intelligence.">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Haul Analytics — US Trucking Intelligence</title>
+<meta name="description" content="Free live dashboard for US trucking. Diesel prices by state, road incidents, lane intelligence.">
 <link rel="canonical" href="https://haulanalytics.com/">
-<meta property="og:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta property="og:description" content="Free live dashboard for US trucking. Diesel prices, road incidents, market intelligence. Updated daily.">
+<meta property="og:title" content="Haul Analytics — US Trucking Intelligence">
+<meta property="og:description" content="Diesel prices, road incidents, lane data. Free. Always.">
 <meta property="og:url" content="https://haulanalytics.com/">
 <meta property="og:site_name" content="Haul Analytics">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Haul Analytics — Live US Trucking Dashboard">
-<meta name="twitter:description" content="Free live dashboard for US trucking.">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="leaflet.css">
 <script src="leaflet.js"></script>
-<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--text:#15171a;--muted:#6b7280;--light:#eaecf0;--bg:#f8f9fa;--card:#fff;--green:#16a34a;--amber:#d97706;--red:#dc2626;--radius:6px;--shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06)}
-body{background:#f5f5f5;color:var(--text);font-family:'Fira Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;padding:0;max-width:100%}
-.banner{background:#fff;border-bottom:1px solid var(--light);padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;height:100px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.banner-brand{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.01em;line-height:1.1;font-family:'Fira Mono',monospace}
-.main{padding:20px 18px 40px;max-width:1440px;margin:0 auto}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px}
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--t:#111;--m:#555;--l:#e5e5e5;--bg:#fafafa;--c:#fff;--g:#16a34a;--a:#d97706;--r:#dc2626;--b:#111;--rad:10px;--sh:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04)}
+body{background:var(--bg);color:var(--t);font-family:'Inter',-apple-system,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.banner{background:var(--c);border-bottom:1px solid var(--l);padding:0 28px;display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:999;height:80px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.banner h1{font-size:15px;font-weight:700;letter-spacing:-.01em;font-family:'JetBrains Mono',monospace}
+.main{max-width:1320px;margin:0 auto;padding:24px 20px 48px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:18px}
 .grid-2{grid-template-columns:repeat(2,1fr)}
-.card{background:#fff;border:1px solid var(--light);border-radius:var(--radius);padding:20px;scroll-margin-top:70px;box-shadow:var(--shadow)}
+.card{background:var(--c);border:1px solid var(--l);border-radius:var(--rad);padding:22px;box-shadow:var(--sh)}
 .card.full{grid-column:1/-1}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--light);gap:10px}
-.card-header h2{font-size:14px;font-weight:700;color:var(--text);font-family:'Fira Mono',monospace;letter-spacing:-.01em}
-.card-body{min-height:30px}
-.pill{font-size:8px;padding:3px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.pill.live{background:#dcfce7;color:var(--green);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.pill.daily{background:#f1f5f9;color:var(--text)}
-.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.ind{background:var(--bg);border-radius:var(--radius);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
-.ind-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-.ind-value{font-size:24px;font-weight:800;color:var(--text);line-height:1.1}
-.ind-detail{font-size:12px;color:var(--text);font-weight:500}
-.ind-meaning{font-size:10px;color:var(--muted);line-height:1.4;margin-top:4px;padding-top:5px;border-top:1px solid var(--light)}
-.diesel-table{width:100%;border-collapse:collapse;font-size:13px}
-.diesel-table th{text-align:left;padding:6px 10px;border-bottom:2px solid var(--light);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-.diesel-table td{padding:7px 10px;border-bottom:1px solid var(--light)}
-.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right;position:relative}
-.fuel-bar{position:absolute;left:0;top:0;height:100%;opacity:.06;border-radius:0 2px 2px 0;pointer-events:none}
-.mwrap{display:flex;gap:0;height:380px;overflow:hidden;border-radius:var(--radius)}
-.mmap{flex:1;height:380px;min-height:380px;width:100%;background:#f0f0f0;border-radius:var(--radius) 0 0 var(--radius)}.mlist{width:300px;min-width:200px;height:380px;overflow-y:auto;flex-shrink:0;font-size:12px}
-.mitem{padding:8px 10px;border-bottom:1px solid var(--light);cursor:pointer;transition:background .1s}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--l);gap:10px}
+.ch h2{font-size:13px;font-weight:700;color:var(--t);font-family:'JetBrains Mono',monospace;letter-spacing:-.01em;text-transform:uppercase}
+.pill{font-size:8px;padding:3px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.pill-live{background:#dcfce7;color:var(--g);animation:pulse 2.5s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pill-ref{background:#f5f5f5;color:var(--m)}
+
+/* Metrics grid */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.metric{background:var(--bg);border-radius:8px;padding:14px 16px}
+.metric-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.metric-label{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.metric-arrow{font-size:16px;font-weight:800}.metric-arrow.up{color:var(--g)}.metric-arrow.down{color:var(--r)}
+.metric-value{font-size:22px;font-weight:800;color:var(--t);line-height:1.1;margin-bottom:2px}
+.metric-detail{font-size:11px;color:var(--t);font-weight:500}
+.metric-insight{font-size:10px;color:var(--m);line-height:1.4;margin-top:6px;padding-top:6px;border-top:1px solid var(--l)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:5px 8px;border-bottom:2px solid var(--l);font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--m);font-weight:600}
+td{padding:7px 8px;border-bottom:1px solid #f0f0f0}
+.val{font-family:'JetBrains Mono',monospace;text-align:right;position:relative;font-weight:600}
+.hbar{position:absolute;left:0;top:0;height:100%;background:var(--b);opacity:.04;border-radius:0 2px 2px 0;pointer-events:none;transition:width .4s ease}
+.gbar{opacity:.03}
+
+/* Dual stat */
+.dual{display:flex;gap:18px;margin-bottom:16px;text-align:center}
+.dual-card{flex:1;padding:16px;background:var(--bg);border-radius:8px}
+.dual-label{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.dual-val{font-size:28px;font-weight:800;color:var(--t);line-height:1.1}
+.dual-sub{font-size:10px;color:var(--m);margin-top:2px}
+.dual-range{font-size:9px;color:var(--m);margin-top:6px}
+
+/* Weather alerts */
+.hdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.hdot-ok{background:var(--g)}.hdot-warn{background:var(--a)}.hdot-danger{background:var(--r);animation:pulse 1.5s ease-in-out infinite}
+.alert-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;align-items:flex-start}
+.alert-row:last-child{border-bottom:none}
+.alert-title{font-size:12px;font-weight:600;color:var(--t)}
+.alert-desc{font-size:11px;color:var(--m)}
+.alert-warn{font-size:11px;color:var(--r);font-weight:600;margin-top:2px}
+
+/* Map */
+.mwrap{display:flex;gap:0;height:400px;overflow:hidden;border-radius:8px}
+.mmap{flex:1;height:400px;min-height:400px;background:#f0f0f0;border-radius:8px 0 0 8px}
+.mlist{width:300px;height:400px;overflow-y:auto;flex-shrink:0;font-size:12px}
+.mitem{padding:9px 12px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .1s}
 .mitem:hover{background:var(--bg)}
-.mhwy{font-weight:600;color:var(--text)}.mdesc{color:var(--muted);font-size:10px;margin-top:1px}
-select,input[type=number]{border-radius:4px;transition:border-color .15s}
-select:focus,input:focus{outline:none;border-color:var(--text)!important}
-@media(max-width:700px){body{font-size:15px}.main{padding:10px 8px 30px}.grid,.grid-2{grid-template-columns:1fr;gap:12px}.card{padding:14px}.inds{grid-template-columns:1fr}.card-header h2{font-size:13px}.mwrap{flex-direction:column;height:auto!important}.mmap{height:260px!important;border-radius:var(--radius) var(--radius) 0 0}.mlist{width:100%;height:220px!important}}</style>
+.mhwy{font-weight:600;color:var(--t);font-size:12px}.mdesc{color:var(--m);font-size:10px;margin-top:2px}
+
+/* Calculator */
+.cform{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.cfield{flex:1;min-width:120px}
+.cfield label{font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
+.cfield select,.cfield input{width:100%;background:var(--bg);border:1px solid var(--l);padding:10px 12px;font-size:13px;font-family:inherit;border-radius:6px;transition:border-color .15s}
+.cfield select:focus,.cfield input:focus{outline:none;border-color:var(--b)}
+.btn{padding:10px 22px;background:var(--b);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.cresult{padding:16px;background:var(--bg);border-radius:8px;display:none}
+.cresult.v{display:block}
+.ccost{font-size:30px;font-weight:800;color:var(--t)}
+.cbreak{font-size:12px;color:var(--m);margin-top:4px;line-height:1.6}
+
+.footer{padding:18px 28px;text-align:center;font-size:10px;color:var(--m);border-top:1px solid var(--l)}
+
+@media(max-width:720px){
+  .main{padding:12px 10px 32px}
+  .grid,.grid-2{grid-template-columns:1fr;gap:12px}
+  .card{padding:16px}
+  .banner{height:64px}
+  .banner h1{font-size:13px}
+  .mgrid{grid-template-columns:1fr 1fr}
+  .dual-val{font-size:22px}
+  .mwrap{flex-direction:column;height:auto!important}
+  .mmap{height:280px!important;border-radius:8px 8px 0 0;min-height:280px!important}
+  .mlist{width:100%;height:220px!important}
+  .cfield{min-width:100%}
+  .metric-value{font-size:18px}
+}
+</style>
 </head>
 <body>
 
 <div class="banner">
-  <div></div>
-  <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;">
-    <h1 class="banner-brand" style="margin:0;padding:0;">HAUL ANALYTICS</h1>
-  </div>
-  <div></div>
+  <h1>HAUL ANALYTICS</h1>
 </div>
 
 <div class="main">
 
   <div class="card full">
-    <div class="card-header"><h2>Market Intelligence</h2><span class="pill live">Live</span></div>
-    <div class="card-body"><div class="inds"><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">US Unemployment</span><span style="color:var(--red);font-weight:800;font-size:16px;">↓</span></div>
-  <div class="ind-value">4.2%</div>
-  <div class="ind-detail">June 2026</div>
-  <div class="ind-meaning">Below 4.5% means tight labor market. Driver wages rising. Harder to recruit.</div>
-</div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Avg Hourly Earnings</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
-  <div class="ind-value">$37.64</div>
-  <div class="ind-detail">June 2026</div>
-  <div class="ind-meaning">Wages are fleet operators' largest cost after fuel. Trending up means margin pressure.</div>
-</div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Diesel PPI</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
-  <div class="ind-value">475.7</div>
-  <div class="ind-detail">June 2026</div>
-  <div class="ind-meaning">Producer Price Index for diesel. Leading indicator for pump prices in 2-4 weeks.</div>
-</div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">US Diesel (National)</span><span style="color:var(--red);font-weight:800;font-size:16px;">↓</span></div>
-  <div class="ind-value">$3.83</div>
-  <div class="ind-detail">Per gallon, retail</div>
-  <div class="ind-meaning">National average diesel. Gulf Coast lowest ($3.45), West Coast highest ($4.12).</div>
-</div><div class="ind">
-  <div style="display:flex;justify-content:space-between"><span class="ind-label">Coast-to-Coast Spread</span><span style="color:var(--green);font-weight:800;font-size:16px;">↑</span></div>
-  <div class="ind-value">$0.67/gal</div>
-  <div class="ind-detail">West Coast minus Gulf Coast</div>
-  <div class="ind-meaning">A $0.67 spread means a 200-gallon fill costs $134 more on the West Coast.</div>
-</div></div></div>
+    <div class="ch"><h2>Market Intelligence</h2><span class="pill pill-live">Live</span></div>
+    <div class="mgrid"><div class="metric">
+  <div class="metric-top"><span class="metric-label">US Unemployment</span><span class="metric-arrow down">↘</span></div>
+  <div class="metric-value">4.2%</div>
+  <div class="metric-detail">June 2026</div>
+  <div class="metric-insight">Below 4.5% means tight labor market. Driver wages rising. Harder to recruit.</div>
+</div><div class="metric">
+  <div class="metric-top"><span class="metric-label">Avg Hourly Earnings</span><span class="metric-arrow up">↗</span></div>
+  <div class="metric-value">$37.64</div>
+  <div class="metric-detail">June 2026</div>
+  <div class="metric-insight">Wages are fleet operators' largest cost after fuel. Trending up means margin pressure.</div>
+</div><div class="metric">
+  <div class="metric-top"><span class="metric-label">Diesel PPI</span><span class="metric-arrow up">↗</span></div>
+  <div class="metric-value">475.7</div>
+  <div class="metric-detail">June 2026</div>
+  <div class="metric-insight">Producer Price Index for diesel. Leading indicator for pump prices in 2-4 weeks.</div>
+</div><div class="metric">
+  <div class="metric-top"><span class="metric-label">US Diesel (National)</span><span class="metric-arrow down">↘</span></div>
+  <div class="metric-value">$3.83</div>
+  <div class="metric-detail">Per gallon, retail</div>
+  <div class="metric-insight">National average diesel. Gulf Coast lowest ($3.45), West Coast highest ($4.12).</div>
+</div><div class="metric">
+  <div class="metric-top"><span class="metric-label">Coast-to-Coast Spread</span><span class="metric-arrow up">↗</span></div>
+  <div class="metric-value">$0.67/gal</div>
+  <div class="metric-detail">West Coast minus Gulf Coast</div>
+  <div class="metric-insight">A $0.67 spread means a 200-gallon fill costs $134 more on the West Coast.</div>
+</div></div>
   </div>
 
-  <div class="grid grid-2" style="margin-top:14px">
+  <div class="grid grid-2" style="margin-top:18px">
     <div class="card">
-      <div class="card-header"><h2>Fuel Prices</h2><span class="pill live">Weekly</span></div>
-      <div class="card-body">
-        <div style="display:flex;gap:24px;margin-bottom:14px;text-align:center;">
-          <div style="flex:1;padding:14px;background:var(--bg);">
-            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Diesel</div>
-            <div style="font-size:26px;font-weight:800;color:var(--text);">$3.83</div>
-            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">per gallon national avg</div>
-            <div style="font-size:9px;color:var(--muted);">Low: Gulf Coast $3.45 · High: California $4.45</div>
-          </div>
-          <div style="flex:1;padding:14px;background:var(--bg);">
-            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Gasoline</div>
-            <div style="font-size:26px;font-weight:800;color:var(--text);">$3.4</div>
-            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">per gallon national avg</div>
-            <div style="font-size:9px;color:var(--muted);">Low: Gulf Coast $3.08 · High: California $4.62</div>
-          </div>
+      <div class="ch"><h2>Fuel Prices</h2><span class="pill pill-live">Weekly</span></div>
+      <div class="dual">
+        <div class="dual-card">
+          <div class="dual-label">Diesel</div>
+          <div class="dual-val">$3.83</div>
+          <div class="dual-sub">per gallon · national avg</div>
+          <div class="dual-range">Low $3.45 · High $4.45</div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Regional prices &middot; EIA Weekly Retail Diesel</div>
-        <table class="diesel-table" style="table-layout:fixed;width:100%;">
-          <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
-          <tr><th>Region</th><th style="text-align:right">Diesel</th><th style="text-align:right">Gasoline</th></tr>
-          <tr><td>Gulf Coast</td><td class="price"><span class="fuel-bar" style="width:77%;background:#15171a;"></span>$3.45</td><td class="price"><span class="fuel-bar" style="width:69%;background:#8b949e;"></span>$3.08</td></tr>
-<tr><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:80%;background:#15171a;"></span>$3.58</td><td class="price"><span class="fuel-bar" style="width:74%;background:#8b949e;"></span>$3.32</td></tr>
-<tr><td>Lower Atlantic</td><td class="price"><span class="fuel-bar" style="width:81%;background:#15171a;"></span>$3.62</td><td class="price"><span class="fuel-bar" style="width:73%;background:#8b949e;"></span>$3.28</td></tr>
-<tr><td>Rocky Mountain</td><td class="price"><span class="fuel-bar" style="width:82%;background:#15171a;"></span>$3.65</td><td class="price"><span class="fuel-bar" style="width:77%;background:#8b949e;"></span>$3.45</td></tr>
-<tr><td>East Coast</td><td class="price"><span class="fuel-bar" style="width:83%;background:#15171a;"></span>$3.72</td><td class="price"><span class="fuel-bar" style="width:75%;background:#8b949e;"></span>$3.35</td></tr>
-<tr><td>West Coast less CA</td><td class="price"><span class="fuel-bar" style="width:86%;background:#15171a;"></span>$3.85</td><td class="price"><span class="fuel-bar" style="width:88%;background:#8b949e;"></span>$3.95</td></tr>
-<tr><td>New England</td><td class="price"><span class="fuel-bar" style="width:87%;background:#15171a;"></span>$3.89</td><td class="price"><span class="fuel-bar" style="width:76%;background:#8b949e;"></span>$3.42</td></tr>
-<tr><td>Central Atlantic</td><td class="price"><span class="fuel-bar" style="width:88%;background:#15171a;"></span>$3.95</td><td class="price"><span class="fuel-bar" style="width:78%;background:#8b949e;"></span>$3.48</td></tr>
-<tr><td>West Coast</td><td class="price"><span class="fuel-bar" style="width:92%;background:#15171a;"></span>$4.12</td><td class="price"><span class="fuel-bar" style="width:96%;background:#8b949e;"></span>$4.28</td></tr>
-<tr><td>California</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>$4.45</td><td class="price"><span class="fuel-bar" style="width:103%;background:#8b949e;"></span>$4.62</td></tr>
-
-        </table>
+        <div class="dual-card">
+          <div class="dual-label">Gasoline</div>
+          <div class="dual-val">$3.4</div>
+          <div class="dual-sub">per gallon · national avg</div>
+          <div class="dual-range">Low $3.08 · High $4.62</div>
+        </div>
       </div>
+      <table><tr><th>Region</th><th class="val">Diesel</th><th class="val">Gasoline</th></tr><tr><td>Gulf Coast</td><td class="val"><span class="hbar" style="width:77%"></span>$3.45</td><td class="val"><span class="hbar gbar" style="width:69%"></span>$3.08</td></tr>
+<tr><td>Midwest</td><td class="val"><span class="hbar" style="width:80%"></span>$3.58</td><td class="val"><span class="hbar gbar" style="width:74%"></span>$3.32</td></tr>
+<tr><td>Lower Atlantic</td><td class="val"><span class="hbar" style="width:81%"></span>$3.62</td><td class="val"><span class="hbar gbar" style="width:73%"></span>$3.28</td></tr>
+<tr><td>Rocky Mountain</td><td class="val"><span class="hbar" style="width:82%"></span>$3.65</td><td class="val"><span class="hbar gbar" style="width:77%"></span>$3.45</td></tr>
+<tr><td>East Coast</td><td class="val"><span class="hbar" style="width:83%"></span>$3.72</td><td class="val"><span class="hbar gbar" style="width:75%"></span>$3.35</td></tr>
+<tr><td>West Coast less CA</td><td class="val"><span class="hbar" style="width:86%"></span>$3.85</td><td class="val"><span class="hbar gbar" style="width:88%"></span>$3.95</td></tr>
+<tr><td>New England</td><td class="val"><span class="hbar" style="width:87%"></span>$3.89</td><td class="val"><span class="hbar gbar" style="width:76%"></span>$3.42</td></tr>
+<tr><td>Central Atlantic</td><td class="val"><span class="hbar" style="width:88%"></span>$3.95</td><td class="val"><span class="hbar gbar" style="width:78%"></span>$3.48</td></tr>
+<tr><td>West Coast</td><td class="val"><span class="hbar" style="width:92%"></span>$4.12</td><td class="val"><span class="hbar gbar" style="width:96%"></span>$4.28</td></tr>
+<tr><td>California</td><td class="val"><span class="hbar" style="width:100%"></span>$4.45</td><td class="val"><span class="hbar gbar" style="width:103%"></span>$4.62</td></tr>
+</table>
+      <div style="font-size:9px;color:var(--m);margin-top:8px;">EIA Weekly Retail Diesel</div>
     </div>
-  <div class="card full" style="margin-top:14px">
-    <div class="card-header"><h2>Road Incidents</h2><span class="pill live">Live</span></div>
-    <div class="card-body">
-      <div class="mwrap"><div class="mmap" id="inc-map"></div><div class="mlist" id="inc-list"></div></div>
-      <div style="font-size:10px;color:var(--muted);margin-top:8px;">Monitoring major US highways. Data from state DOT systems.</div>
-    </div>
-  </div>
-  </div>
 
-  <div class="card full" style="margin-top:14px">
-    <div class="card-header"><h2>Weather Alerts</h2><span class="pill live">Live</span></div>
-    <div class="card-body">
-      <div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-5 PNW</span>
-  <div>
-    <strong>Portland, OR</strong> — 88°F, Clear, wind 8mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+    <div class="card">
+      <div class="ch"><h2>Weather Alerts</h2><span class="pill pill-live">Live</span></div>
+      <div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-5 PNW — Portland, OR</div>
+    <div class="alert-desc">88°F, Clear, wind 8 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-5 CA</span>
-  <div>
-    <strong>Los Angeles, CA</strong> — 86°F, Clear, wind 9mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-5 CA — Los Angeles, CA</div>
+    <div class="alert-desc">86°F, Clear, wind 9 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-10 TX</span>
-  <div>
-    <strong>Houston, TX</strong> — 82°F, Overcast, wind 6mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-10 TX — Houston, TX</div>
+    <div class="alert-desc">82°F, Overcast, wind 6 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-10 AZ</span>
-  <div>
-    <strong>Phoenix, AZ</strong> — 106°F, Mostly clear, wind 2mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-10 AZ — Phoenix, AZ</div>
+    <div class="alert-desc">106°F, Mostly clear, wind 2 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-40 NM</span>
-  <div>
-    <strong>Albuquerque, NM</strong> — 87°F, Overcast, wind 15mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-40 NM — Albuquerque, NM</div>
+    <div class="alert-desc">87°F, Overcast, wind 15 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-70 CO</span>
-  <div>
-    <strong>Denver, CO</strong> — 93°F, Clear, wind 11mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-70 CO — Denver, CO</div>
+    <div class="alert-desc">93°F, Clear, wind 11 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-70 KS</span>
-  <div>
-    <strong>Kansas City, MO</strong> — 88°F, Clear, wind 6mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-70 KS — Kansas City, MO</div>
+    <div class="alert-desc">88°F, Clear, wind 6 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-80 WY</span>
-  <div>
-    <strong>Cheyenne, WY</strong> — 86°F, Clear, wind 12mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-80 WY — Cheyenne, WY</div>
+    <div class="alert-desc">86°F, Clear, wind 12 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-80 IL</span>
-  <div>
-    <strong>Chicago, IL</strong> — 82°F, Clear, wind 4mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-80 IL — Chicago, IL</div>
+    <div class="alert-desc">82°F, Clear, wind 4 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-90 MT</span>
-  <div>
-    <strong>Billings, MT</strong> — 75°F, Rain, wind 8mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-90 MT — Billings, MT</div>
+    <div class="alert-desc">75°F, Rain, wind 8 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-90 MN</span>
-  <div>
-    <strong>Minneapolis, MN</strong> — 89°F, Clear, wind 10mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-90 MN — Minneapolis, MN</div>
+    <div class="alert-desc">89°F, Clear, wind 10 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-95 NY</span>
-  <div>
-    <strong>New York, NY</strong> — 79°F, Clear, wind 4mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-95 NY — New York, NY</div>
+    <div class="alert-desc">79°F, Clear, wind 4 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-95 FL</span>
-  <div>
-    <strong>Miami, FL</strong> — 84°F, Overcast, wind 4mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-95 FL — Miami, FL</div>
+    <div class="alert-desc">84°F, Overcast, wind 4 mph — Clear</div>
+    
   </div>
-</div><div class="incident-item">
-  <span class="incident-badge" style="background:green;color:#fff;">I-95 VA</span>
-  <div>
-    <strong>Richmond, VA</strong> — 81°F, Clear, wind 5mph
-    <div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>
+</div><div class="alert-row">
+  <span class="hdot hdot-ok"></span>
+  <div class="alert-info">
+    <div class="alert-title">I-95 VA — Richmond, VA</div>
+    <div class="alert-desc">81°F, Clear, wind 5 mph — Clear</div>
+    
   </div>
 </div>
-      <div style="font-size:10px;color:var(--muted);margin-top:10px;">14 major US trucking corridors. Data from NOAA via Open-Meteo.</div>
+      <div style="font-size:9px;color:var(--m);margin-top:10px;">14 corridors · NOAA via Open-Meteo</div>
     </div>
   </div>
 
-  <div class="grid grid-2" style="margin-top:14px">
-    <div class="card">
-      <div class="card-header"><h2>Diesel Tax by State</h2><span class="pill daily">Reference</span></div>
-      <div class="card-body">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">IFTA fuel tax rates. Combined rate = state + federal.</div>
-        <table class="diesel-table">
-          <tr><th>State</th><th style="text-align:right">Diesel Tax</th><th style="text-align:right">Gas Tax</th><th style="text-align:right">Combined</th></tr>
-          <tr><td>CA</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>$0.89</td><td class="price">$0.60</td><td class="price">$1.08</td></tr>
-<tr><td>PA</td><td class="price"><span class="fuel-bar" style="width:83%;background:#15171a;"></span>$0.74</td><td class="price">$0.59</td><td class="price">$0.93</td></tr>
-<tr><td>IL</td><td class="price"><span class="fuel-bar" style="width:70%;background:#15171a;"></span>$0.63</td><td class="price">$0.67</td><td class="price">$0.82</td></tr>
-<tr><td>IN</td><td class="price"><span class="fuel-bar" style="width:64%;background:#15171a;"></span>$0.57</td><td class="price">$0.34</td><td class="price">$0.76</td></tr>
-<tr><td>WA</td><td class="price"><span class="fuel-bar" style="width:61%;background:#15171a;"></span>$0.55</td><td class="price">$0.49</td><td class="price">$0.74</td></tr>
-<tr><td>CT</td><td class="price"><span class="fuel-bar" style="width:60%;background:#15171a;"></span>$0.54</td><td class="price">$0.25</td><td class="price">$0.73</td></tr>
-<tr><td>NJ</td><td class="price"><span class="fuel-bar" style="width:55%;background:#15171a;"></span>$0.49</td><td class="price">$0.42</td><td class="price">$0.68</td></tr>
-<tr><td>MI</td><td class="price"><span class="fuel-bar" style="width:53%;background:#15171a;"></span>$0.48</td><td class="price">$0.45</td><td class="price">$0.67</td></tr>
-<tr><td>OH</td><td class="price"><span class="fuel-bar" style="width:52%;background:#15171a;"></span>$0.47</td><td class="price">$0.39</td><td class="price">$0.66</td></tr>
-<tr><td>MD</td><td class="price"><span class="fuel-bar" style="width:47%;background:#15171a;"></span>$0.42</td><td class="price">$0.42</td><td class="price">$0.61</td></tr>
+  <div class="card full" style="margin-top:18px">
+    <div class="ch"><h2>Road Incidents</h2><span class="pill pill-live">Live</span></div>
+    <div class="mwrap"><div class="mmap" id="inc-map"></div><div class="mlist" id="inc-list"></div></div>
+    <div style="font-size:9px;color:var(--m);margin-top:8px;">Major US highways · DOT data</div>
+  </div>
 
-        </table>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;">Showing highest diesel tax states. All 48 contiguous states in data file.</div>
-      </div>
+  <div class="grid grid-2" style="margin-top:18px">
+    <div class="card">
+      <div class="ch"><h2>Diesel Tax by State</h2><span class="pill pill-ref">Reference</span></div>
+      <table><tr><th>State</th><th class="val">Diesel Tax</th><th class="val">Gas Tax</th><th class="val">Combined</th></tr><tr><td>CA</td><td class="val"><span class="hbar" style="width:100%"></span>$0.89</td><td class="val">$0.60</td><td class="val">$1.08</td></tr>
+<tr><td>PA</td><td class="val"><span class="hbar" style="width:83%"></span>$0.74</td><td class="val">$0.59</td><td class="val">$0.93</td></tr>
+<tr><td>IL</td><td class="val"><span class="hbar" style="width:70%"></span>$0.63</td><td class="val">$0.67</td><td class="val">$0.82</td></tr>
+<tr><td>IN</td><td class="val"><span class="hbar" style="width:64%"></span>$0.57</td><td class="val">$0.34</td><td class="val">$0.76</td></tr>
+<tr><td>WA</td><td class="val"><span class="hbar" style="width:61%"></span>$0.55</td><td class="val">$0.49</td><td class="val">$0.74</td></tr>
+<tr><td>CT</td><td class="val"><span class="hbar" style="width:60%"></span>$0.54</td><td class="val">$0.25</td><td class="val">$0.73</td></tr>
+<tr><td>NJ</td><td class="val"><span class="hbar" style="width:55%"></span>$0.49</td><td class="val">$0.42</td><td class="val">$0.68</td></tr>
+<tr><td>MI</td><td class="val"><span class="hbar" style="width:53%"></span>$0.48</td><td class="val">$0.45</td><td class="val">$0.67</td></tr>
+<tr><td>OH</td><td class="val"><span class="hbar" style="width:52%"></span>$0.47</td><td class="val">$0.39</td><td class="val">$0.66</td></tr>
+<tr><td>MD</td><td class="val"><span class="hbar" style="width:47%"></span>$0.42</td><td class="val">$0.42</td><td class="val">$0.61</td></tr>
+</table>
+      <div style="font-size:9px;color:var(--m);margin-top:8px;">IFTA rates · Top 10 highest diesel tax states</div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>Freight Flows</h2><span class="pill daily">Reference</span></div>
-      <div class="card-body">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
-        <table class="diesel-table">
-          <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
-          <tr><td>Midwest</td><td>Southeast</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>218</td><td class="price">Food products</td></tr>
-<tr><td>Midwest</td><td>Northeast</td><td class="price"><span class="fuel-bar" style="width:66%;background:#15171a;"></span>145</td><td class="price">Machinery</td></tr>
-<tr><td>Southwest</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:60%;background:#15171a;"></span>132</td><td class="price">Electronics</td></tr>
-<tr><td>Southeast</td><td>Northeast</td><td class="price"><span class="fuel-bar" style="width:58%;background:#15171a;"></span>128</td><td class="price">Textiles/furniture</td></tr>
-<tr><td>West Coast</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:52%;background:#15171a;"></span>115</td><td class="price">Agricultural products</td></tr>
-<tr><td>Gulf Coast</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:44%;background:#15171a;"></span>98</td><td class="price">Petroleum/chemicals</td></tr>
-
-        </table>
-        <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
-      </div>
+      <div class="ch"><h2>Freight Flows</h2><span class="pill pill-ref">Reference</span></div>
+      <table><tr><th>From</th><th>To</th><th class="val">Tons (M)</th><th>Commodity</th></tr><tr><td>Midwest</td><td>Southeast</td><td class="val"><span class="hbar" style="width:100%"></span>218</td><td>Food products</td></tr>
+<tr><td>Midwest</td><td>Northeast</td><td class="val"><span class="hbar" style="width:66%"></span>145</td><td>Machinery</td></tr>
+<tr><td>Southwest</td><td>Midwest</td><td class="val"><span class="hbar" style="width:60%"></span>132</td><td>Electronics</td></tr>
+<tr><td>Southeast</td><td>Northeast</td><td class="val"><span class="hbar" style="width:58%"></span>128</td><td>Textiles/furniture</td></tr>
+<tr><td>West Coast</td><td>Midwest</td><td class="val"><span class="hbar" style="width:52%"></span>115</td><td>Agricultural products</td></tr>
+<tr><td>Gulf Coast</td><td>Midwest</td><td class="val"><span class="hbar" style="width:44%"></span>98</td><td>Petroleum/chemicals</td></tr>
+</table>
+      <div style="font-size:9px;color:var(--m);margin-top:8px;">Truck = 72.6% of US freight · BTS</div>
     </div>
   </div>
 
-  <div class="card full" style="margin-top:14px">
-    <div class="card-header"><h2>Lane Cost Calculator</h2><span class="pill live">Live</span></div>
-    <div class="card-body">
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;">
-        <div style="flex:1;min-width:120px;">
-          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">From</label>
-          <select id="calc-from" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
-            <option value="">Select city</option>
-          </select>
-        </div>
-        <div style="flex:1;min-width:120px;">
-          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">To</label>
-          <select id="calc-to" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
-            <option value="">Select city</option>
-          </select>
-        </div>
-        <div style="flex:0.5;min-width:80px;">
-          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">MPG</label>
-          <input type="number" id="calc-mpg" value="6" min="4" max="10" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
-        </div>
-        <button onclick="runCalc()" style="padding:9px 20px;background:var(--text);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;align-self:flex-end;">Calculate</button>
-      </div>
-      <div id="calc-result" style="padding:14px;background:var(--bg);display:none;">
-        <div style="font-size:26px;font-weight:800;color:var(--text);" id="calc-cost">—</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="calc-detail"></div>
-      </div>
-      <div id="calc-empty" style="padding:14px;color:var(--muted);text-align:center;">
-        Select two cities to calculate the fuel cost on that lane.
-      </div>
+  <div class="card full" style="margin-top:18px">
+    <div class="ch"><h2>Lane Calculator</h2><span class="pill pill-live">Tool</span></div>
+    <div class="cform">
+      <div class="cfield"><label>From</label><select id="cf"><option value="">Select city</option></select></div>
+      <div class="cfield"><label>To</label><select id="ct"><option value="">Select city</option></select></div>
+      <div class="cfield" style="flex:.4;min-width:70px"><label>MPG</label><input type="number" id="cmpg" value="6" min="4" max="10"></div>
+      <button class="btn" onclick="runCalc()">Calculate</button>
     </div>
+    <div class="cresult" id="cr">
+      <div class="ccost" id="cv">—</div>
+      <div class="cbreak" id="cd"></div>
+    </div>
+    <div id="ce" style="padding:14px;color:var(--m);text-align:center;font-size:12px;">Select two cities and click Calculate to see fuel cost on that lane.</div>
   </div>
 
 </div>
 
-<footer style="background:#0d1117;color:#8b949e;padding:18px 24px;margin-top:20px;font-size:11px;font-family:'SF Mono',monospace;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center;border-top:1px solid #30363d;">
-  <div style="font-size:12px;font-weight:700;color:#c9d1d9;">HAUL ANALYTICS</div>
-  <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, and DOT. Informational use only.</div>
-</footer>
+<div class="footer">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, NOAA, DOT &middot; Informational use only</div>
 
-<script src="calc.js"></script>
+<script src="distances.json"></script>
+// Lane cost calculator
+let calcDistances={};
+let calcDiesel=0;
+
+fetch('data/distances.json').then(r=>r.json()).then(d=>{
+  calcDistances=d.distances;
+  const cities=d.cities;
+  ['calc-from','calc-to'].forEach(id=>{
+    const sel=document.getElementById(id);
+    cities.forEach(c=>{
+      const opt=document.createElement('option');
+      opt.value=c.code;opt.textContent=c.name;
+      sel.appendChild(opt);
+    });
+  });
+});
+
+fetch('data/fuel.json').then(r=>r.json()).then(d=>{
+  calcDiesel=d.national_avg||3.83;
+});
+
+function runCalc(){
+  const from=document.getElementById('calc-from').value;
+  const to=document.getElementById('calc-to').value;
+  const mpg=parseFloat(document.getElementById('calc-mpg').value)||6;
+  const result=document.getElementById('calc-result');
+  const empty=document.getElementById('calc-empty');
+  const cost=document.getElementById('calc-cost');
+  const detail=document.getElementById('calc-detail');
+  
+  if(!from||!to||from===to){
+    result.style.display='none';empty.style.display='block';return;
+  }
+  
+  const dist=calcDistances[from+'-'+to]||calcDistances[to+'-'+from];
+  if(!dist){
+    result.style.display='none';empty.style.display='block';
+    empty.textContent='Route data not available for this lane yet.';
+    return;
+  }
+  
+  const gallons=dist/mpg;
+  const total=gallons*calcDiesel;
+  
+  cost.textContent='$'+total.toFixed(0);
+  detail.innerHTML='<strong>'+from+'</strong> → <strong>'+to+'</strong><br>'+dist.toLocaleString()+' miles &middot; '+mpg+' MPG &middot; '+gallons.toFixed(1)+' gal &middot; $'+calcDiesel.toFixed(2)+'/gal diesel';
+  
+  result.style.display='block';empty.style.display='none';
+}
+
 <script>
 // Road incidents map
 var incMap=L.map('inc-map').setView([39.8,-98.5],4);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(incMap);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'}).addTo(incMap);
 L.Icon.Default.prototype.options.imagePath='https://unpkg.com/leaflet@1.9.4/dist/images/';
 var markers=[];
-fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
-  incMap.invalidateSize();
+var incData=[{"highway": "I-80", "state": "PA", "type": "Construction", "description": "Lane closure eastbound near Clarion. Right lane closed for bridge deck repair.", "severity": "Medium", "delay": "15-25 min", "detour": "None. Single lane open.", "updated": "07/15 2:30 PM", "lat": 41.2, "lon": -79.4}, {"highway": "I-5", "state": "CA", "type": "Weather", "description": "High wind advisory at Grapevine. Gusts up to 55 mph.", "severity": "High", "delay": "Variable", "detour": "CA-99 for high-profile vehicles", "updated": "07/15 3:00 PM", "lat": 34.9, "lon": -118.9}, {"highway": "I-10", "state": "TX", "type": "Accident", "description": "Multi-vehicle crash near Houston. Right lane blocked.", "severity": "High", "delay": "30-45 min", "detour": "I-610 loop", "updated": "07/15 1:15 PM", "lat": 29.8, "lon": -95.4}, {"highway": "I-70", "state": "CO", "type": "Construction", "description": "Bridge work near Vail Pass. Single lane with flaggers.", "severity": "Medium", "delay": "10-20 min", "detour": "US-6 for light vehicles only", "updated": "07/15 8:00 AM", "lat": 39.6, "lon": -106.4}, {"highway": "I-95", "state": "FL", "type": "Accident", "description": "Jackknifed tractor-trailer. Northbound closed at Exit 362.", "severity": "Critical", "delay": "1-2 hours", "detour": "Exit 358 to US-1 northbound", "updated": "07/15 4:00 PM", "lat": 30.3, "lon": -81.7}, {"highway": "I-40", "state": "NM", "type": "Weather", "description": "Dust storm. Visibility below 1/4 mile. May close.", "severity": "High", "delay": "Indefinite", "detour": "Pull off and wait", "updated": "07/15 2:45 PM", "lat": 35.2, "lon": -103.7}, {"highway": "I-90", "state": "MT", "type": "Construction", "description": "Pavement resurfacing. Speed reduced to 45 mph.", "severity": "Low", "delay": "5-10 min", "detour": "None required", "updated": "07/15 7:00 AM", "lat": 45.8, "lon": -108.5}, {"highway": "I-35", "state": "TX", "type": "Accident", "description": "Overturned fuel tanker. HAZMAT on scene.", "severity": "Critical", "delay": "2-4 hours", "detour": "SH-130 toll road", "updated": "07/15 5:30 PM", "lat": 30.3, "lon": -97.7}];
+(function(){
   var list=document.getElementById('inc-list'),h='';
-  incidents.forEach((inc,i)=>{
+  incData.forEach(function(inc,i){
     if(inc.lat&&inc.lon){
-      var m=L.marker([inc.lat,inc.lon]).addTo(incMap).bindPopup('<strong>'+inc.highway+'</strong><br>'+inc.state+'<br><b>Type:</b> '+inc.type+'<br><b>Severity:</b> '+inc.severity+'<br><b>Delay:</b> '+inc.delay+'<br><b>Detour:</b> '+inc.detour+'<br><small>Updated: '+inc.updated+'</small>');
+      var m=L.marker([inc.lat,inc.lon]).addTo(incMap)
+        .bindPopup('<strong>'+inc.highway+'</strong><br>'+inc.state+'<br>'+inc.type+' · '+inc.severity+' · '+inc.delay+'<br>'+inc.detour+'<br><small>'+inc.updated+'</small>');
       markers.push(m);
-      h+='<div class="mitem" onclick="incMap.setView(['+inc.lat+','+inc.lon+'],10);markers['+i+'].openPopup()"><div class="mhwy" style="font-size:12px;">'+inc.highway+' — '+inc.state+'</div><div class="mdesc" style="font-size:10px;">'+inc.type+' • '+inc.severity+' • '+inc.delay+'</div><div style="font-size:9px;color:var(--muted);">'+inc.description.substring(0,60)+'...</div></div>';
+      h+='<div class="mitem" onclick="incMap.setView(['+inc.lat+','+inc.lon+'],10);markers['+i+'].openPopup()"><div class="mhwy">'+inc.highway+' · '+inc.state+'</div><div class="mdesc">'+inc.type+' · '+inc.severity+' · '+inc.delay+'</div></div>';
     }
   });
-  if(!h)h='<div style="padding:10px;color:var(--muted);">No active incidents on monitored highways.</div>';
+  if(!h)h='<div style="padding:12px;color:var(--m);">No active incidents on monitored highways.</div>';
   list.innerHTML=h;
-}).catch(()=>{document.getElementById('inc-list').innerHTML='<div style="padding:10px;color:var(--muted);">Incident data loading...</div>'});
+  setTimeout(function(){incMap.invalidateSize();},200);
+})();
 </script>
 </body>
 </html>
