@@ -95,7 +95,7 @@ regions = fuel.get('regions', {})
 gas_regions = fuel.get('gas_regions', {})
 for region, price in sorted(regions.items(), key=lambda x: x[1]):
     gprice = gas_regions.get(region, '—')
-    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td><td class="price">${gprice:.2f}</td></tr>\\n'
+    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td><td class="price">${gprice:.2f}</td></tr>\n'
 
 # Incidents data loaded via JS map below
 
