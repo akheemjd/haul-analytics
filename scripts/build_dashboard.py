@@ -149,13 +149,19 @@ html = f"""<!DOCTYPE html>
     <div class="card">
       <div class="card-header"><h2>Fuel Prices</h2><span class="pill live">Weekly</span></div>
       <div class="card-body">
-        <div style="display:flex;gap:12px;margin-bottom:12px;font-size:13px;color:var(--text);">
-          <span><strong>Diesel</strong> ${fuel.get('national_avg','—')}/gal</span>
-          <span style="color:var(--light);">|</span>
-          <span><strong>Gasoline</strong> ${fuel.get('gasoline_avg','—')}/gal</span>
-          <span style="color:var(--light);">|</span>
-          <span style="color:var(--muted);font-size:10px;">US national avg &middot; {fuel.get('source','EIA Weekly Retail')}</span>
+        <div style="display:flex;gap:24px;margin-bottom:14px;text-align:center;">
+          <div style="flex:1;padding:12px 0;background:var(--bg);">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Diesel</div>
+            <div style="font-size:26px;font-weight:800;color:var(--text);">${fuel.get('national_avg','—')}</div>
+            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+          </div>
+          <div style="flex:1;padding:12px 0;background:var(--bg);">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Gasoline</div>
+            <div style="font-size:26px;font-weight:800;color:var(--text);">${fuel.get('gasoline_avg','—')}</div>
+            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+          </div>
         </div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Regional prices &middot; {fuel.get('source','EIA Weekly Retail')}</div>
         <table class="diesel-table" style="table-layout:fixed;width:100%;">
           <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
           <tr><th>Region</th><th style="text-align:right">Diesel</th><th style="text-align:right">Gasoline</th></tr>
