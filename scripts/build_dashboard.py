@@ -141,10 +141,7 @@ html = f"""<!DOCTYPE html>
 <body>
 
 <div class="banner">
-  <nav style="padding-left:250px;font-size:15px;font-weight:700;font-family:'Fira Mono',monospace;">
-    <a href="https://haulanalytics.com" class="desk-link" style="color:var(--text);text-decoration:none;margin-right:18px;">Home</a>
-    <a href="https://haulanalytics.com/about/" class="desk-link" style="color:var(--text);text-decoration:none;">About</a>
-  </nav>
+  <div></div>
   <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;">
     <h1 class="banner-brand" style="margin:0;padding:0;">HAUL ANALYTICS</h1>
   </div>
