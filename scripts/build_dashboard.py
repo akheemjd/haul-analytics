@@ -216,7 +216,7 @@ html = f"""<!DOCTYPE html>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
         <table class="diesel-table">
           <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
-          {freight_rows}
+          """ + freight_rows + """
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
       </div>

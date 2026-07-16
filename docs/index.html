@@ -264,7 +264,13 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
         <table class="diesel-table">
           <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
-          {freight_rows}
+          <tr><td>Midwest</td><td>Southeast</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>218</td><td class="price">Food products</td></tr>
+<tr><td>Midwest</td><td>Northeast</td><td class="price"><span class="fuel-bar" style="width:66%;background:#15171a;"></span>145</td><td class="price">Machinery</td></tr>
+<tr><td>Southwest</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:60%;background:#15171a;"></span>132</td><td class="price">Electronics</td></tr>
+<tr><td>Southeast</td><td>Northeast</td><td class="price"><span class="fuel-bar" style="width:58%;background:#15171a;"></span>128</td><td class="price">Textiles/furniture</td></tr>
+<tr><td>West Coast</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:52%;background:#15171a;"></span>115</td><td class="price">Agricultural products</td></tr>
+<tr><td>Gulf Coast</td><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:44%;background:#15171a;"></span>98</td><td class="price">Petroleum/chemicals</td></tr>
+
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
       </div>
