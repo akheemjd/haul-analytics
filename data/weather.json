@@ -1,0 +1,146 @@
+{
+  "alerts": [
+    {
+      "corridor": "I-5 PNW",
+      "city": "Portland, OR",
+      "temp": 88,
+      "wind": 8,
+      "gusts": 9,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-5 CA",
+      "city": "Los Angeles, CA",
+      "temp": 86,
+      "wind": 9,
+      "gusts": 13,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-10 TX",
+      "city": "Houston, TX",
+      "temp": 82,
+      "wind": 6,
+      "gusts": 14,
+      "conditions": "Overcast",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-10 AZ",
+      "city": "Phoenix, AZ",
+      "temp": 106,
+      "wind": 2,
+      "gusts": 7,
+      "conditions": "Mostly clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-40 NM",
+      "city": "Albuquerque, NM",
+      "temp": 87,
+      "wind": 15,
+      "gusts": 24,
+      "conditions": "Overcast",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-70 CO",
+      "city": "Denver, CO",
+      "temp": 93,
+      "wind": 11,
+      "gusts": 14,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-70 KS",
+      "city": "Kansas City, MO",
+      "temp": 88,
+      "wind": 6,
+      "gusts": 8,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-80 WY",
+      "city": "Cheyenne, WY",
+      "temp": 86,
+      "wind": 12,
+      "gusts": 15,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-80 IL",
+      "city": "Chicago, IL",
+      "temp": 82,
+      "wind": 4,
+      "gusts": 5,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-90 MT",
+      "city": "Billings, MT",
+      "temp": 75,
+      "wind": 8,
+      "gusts": 10,
+      "conditions": "Rain",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-90 MN",
+      "city": "Minneapolis, MN",
+      "temp": 89,
+      "wind": 10,
+      "gusts": 14,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-95 NY",
+      "city": "New York, NY",
+      "temp": 79,
+      "wind": 4,
+      "gusts": 8,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-95 FL",
+      "city": "Miami, FL",
+      "temp": 84,
+      "wind": 4,
+      "gusts": 8,
+      "conditions": "Overcast",
+      "alert": null,
+      "level": "normal"
+    },
+    {
+      "corridor": "I-95 VA",
+      "city": "Richmond, VA",
+      "temp": 81,
+      "wind": 5,
+      "gusts": 9,
+      "conditions": "Clear",
+      "alert": null,
+      "level": "normal"
+    }
+  ],
+  "updated": "2026-07-15T20:27:30.161806",
+  "source": "Open-Meteo / NOAA"
+}
