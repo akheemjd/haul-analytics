@@ -144,10 +144,33 @@ html = f"""<!DOCTYPE html>
   </div>
 
   <div class="card full" style="margin-top:14px">
-    <div class="card-header"><h2>Lane Data</h2><span class="pill daily">Coming Soon</span></div>
-    <div class="card-body" style="color:var(--muted);padding:20px 0;text-align:center;">
-      Rate comparison tool for major US freight lanes.<br>
-      <span style="font-size:12px;">Enter two cities to compare diesel costs on that lane. Launching next.</span>
+    <div class="card-header"><h2>Lane Cost Calculator</h2><span class="pill live">Live</span></div>
+    <div class="card-body">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;">
+        <div style="flex:1;min-width:120px;">
+          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">From</label>
+          <select id="calc-from" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+            <option value="">Select city</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:120px;">
+          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">To</label>
+          <select id="calc-to" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+            <option value="">Select city</option>
+          </select>
+        </div>
+        <div style="flex:0.5;min-width:80px;">
+          <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">MPG</label>
+          <input type="number" id="calc-mpg" value="6" min="4" max="10" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+        </div>
+      </div>
+      <div id="calc-result" style="padding:14px;background:var(--bg);display:none;">
+        <div style="font-size:26px;font-weight:800;color:var(--text);" id="calc-cost">—</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="calc-detail"></div>
+      </div>
+      <div id="calc-empty" style="padding:14px;color:var(--muted);text-align:center;">
+        Select two cities to calculate the fuel cost on that lane.
+      </div>
     </div>
   </div>
 
@@ -158,6 +181,7 @@ html = f"""<!DOCTYPE html>
   <div style="font-size:9px;color:#8b949e;">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, and DOT. Informational use only.</div>
 </footer>
 
+<script src="calc.js"></script>
 </body>
 </html>"""
 
