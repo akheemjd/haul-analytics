@@ -308,6 +308,7 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 // Road incidents map
 var incMap=L.map('inc-map').setView([39.8,-98.5],4);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(incMap);
+L.Icon.Default.prototype.options.imagePath='https://unpkg.com/leaflet@1.9.4/dist/images/';
 var markers=[];
 fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
   incMap.invalidateSize();
