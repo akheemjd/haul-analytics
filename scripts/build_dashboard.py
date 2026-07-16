@@ -246,9 +246,9 @@ fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
   var list=document.getElementById('inc-list'),h='';
   incidents.forEach((inc,i)=>{
     if(inc.lat&&inc.lon){
-      var m=L.marker([inc.lat,inc.lon]).addTo(incMap).bindPopup('<strong>'+inc.highway+'</strong><br>'+inc.state+' — '+inc.description);
+      var m=L.marker([inc.lat,inc.lon]).addTo(incMap).bindPopup('<strong>'+inc.highway+'</strong><br>'+inc.state+'<br><b>Type:</b> '+inc.type+'<br><b>Severity:</b> '+inc.severity+'<br><b>Delay:</b> '+inc.delay+'<br><b>Detour:</b> '+inc.detour+'<br><small>Updated: '+inc.updated+'</small>');
       markers.push(m);
-      h+='<div class="mitem" onclick="incMap.setView(['+inc.lat+','+inc.lon+'],10);markers['+i+'].openPopup()"><div class="mhwy">'+inc.highway+' — '+inc.state+'</div><div class="mdesc">'+inc.type+' — '+inc.description+'</div></div>';
+      h+='<div class="mitem" onclick="incMap.setView(['+inc.lat+','+inc.lon+'],10);markers['+i+'].openPopup()"><div class="mhwy" style="font-size:12px;">'+inc.highway+' — '+inc.state+'</div><div class="mdesc" style="font-size:10px;">'+inc.type+' • '+inc.severity+' • '+inc.delay+'</div><div style="font-size:9px;color:var(--muted);">'+inc.description.substring(0,60)+'...</div></div>';
     }
   });
   if(!h)h='<div style="padding:10px;color:var(--muted);">No active incidents on monitored highways.</div>';
