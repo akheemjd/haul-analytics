@@ -40,7 +40,8 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .diesel-table{width:100%;border-collapse:collapse;font-size:13px}
 .diesel-table th{text-align:left;padding:6px 10px;border-bottom:2px solid var(--light);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .diesel-table td{padding:6px 10px;border-bottom:1px solid var(--light)}
-.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right}
+.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right;position:relative}
+.fuel-bar{position:absolute;left:0;top:0;height:100%;opacity:.08;border-radius:0 2px 2px 0;pointer-events:none}
 .incident-item{padding:10px 0;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:flex-start}
 .incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
@@ -76,6 +77,12 @@ incidents = load('incidents.json')
 commodity = load('commodity.json')
 weather = load('weather.json')
 fuel_tax = load('fuel_tax.json')
+# Freight flows with bars
+freight_rows = ''
+max_tons = max(l['tons_millions'] for l in commodity.get('lanes', [{'tons_millions':1}])) if commodity.get('lanes') else 1
+for l in commodity.get('lanes', [])[:6]:
+    bar_w = int((l['tons_millions'] / max_tons) * 100)
+    freight_rows += f'<tr><td>{l["origin"]}</td><td>{l["destination"]}</td><td class="price"><span class="fuel-bar" style="width:{bar_w}%;background:#15171a;"></span>{l["tons_millions"]}</td><td class="price">{l["top_commodity"]}</td></tr>\n'
 
 # Market indicators
 market_rows = ''
@@ -89,13 +96,17 @@ for i in market.get('indicators', []):
   <div class="ind-meaning">{i.get('what_it_means','')}</div>
 </div>"""
 
-# Fuel table
+# Fuel table with visual bars
 diesel_rows = ''
 regions = fuel.get('regions', {})
 gas_regions = fuel.get('gas_regions', {})
+nat_avg = fuel.get('national_avg', 3.83)
+max_price = max(regions.values()) if regions else 4.5
 for region, price in sorted(regions.items(), key=lambda x: x[1]):
-    gprice = gas_regions.get(region, '—')
-    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td><td class="price">${gprice:.2f}</td></tr>\n'
+    gprice = gas_regions.get(region, 0)
+    dbar_w = int((price / max_price) * 100)
+    gbar_w = int((gprice / max_price) * 100) if gprice else 0
+    diesel_rows += f'<tr><td>{region}</td><td class="price"><span class="fuel-bar" style="width:{dbar_w}%;background:#15171a;"></span>${price:.2f}</td><td class="price"><span class="fuel-bar" style="width:{gbar_w}%;background:#8b949e;"></span>${gprice:.2f}</td></tr>\n'
 
 # Incidents data loaded via JS map below
 
@@ -116,8 +127,10 @@ tax_states = fuel_tax.get('states', {})
 tax_high = sorted(tax_states.items(), key=lambda x: x[1]['diesel_tax'], reverse=True)[:10]
 tax_low = sorted(tax_states.items(), key=lambda x: x[1]['diesel_tax'])[:5]
 tax_rows = ""
+max_tax = tax_high[0][1]['diesel_tax'] if tax_high else 1
 for code, t in tax_high:
-    tax_rows += f'<tr><td>{code}</td><td class="price">${t["diesel_tax"]:.2f}</td><td class="price">${t["gas_tax"]:.2f}</td><td class="price">${t["total_combined"]:.2f}</td></tr>\n'
+    bar_w = int((t['diesel_tax'] / max_tax) * 100)
+    tax_rows += f'<tr><td>{code}</td><td class="price"><span class="fuel-bar" style="width:{bar_w}%;background:#15171a;"></span>${t["diesel_tax"]:.2f}</td><td class="price">${t["gas_tax"]:.2f}</td><td class="price">${t["total_combined"]:.2f}</td></tr>\n'
 
 html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -206,7 +219,7 @@ html = f"""<!DOCTYPE html>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
         <table class="diesel-table">
           <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
-          """ + ''.join([f'<tr><td>{l["origin"]}</td><td>{l["destination"]}</td><td class="price">{l["tons_millions"]}</td><td class="price">{l["top_commodity"]}</td></tr>\n' for l in commodity.get('lanes', [])[:6]]) + """
+          {freight_rows}
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
       </div>

@@ -44,7 +44,8 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .diesel-table{width:100%;border-collapse:collapse;font-size:13px}
 .diesel-table th{text-align:left;padding:6px 10px;border-bottom:2px solid var(--light);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .diesel-table td{padding:6px 10px;border-bottom:1px solid var(--light)}
-.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right}
+.diesel-table .price{font-weight:700;font-family:'Fira Mono',monospace;text-align:right;position:relative}
+.fuel-bar{position:absolute;left:0;top:0;height:100%;opacity:.08;border-radius:0 2px 2px 0;pointer-events:none}
 .incident-item{padding:10px 0;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:flex-start}
 .incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
@@ -123,16 +124,16 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
         <table class="diesel-table" style="table-layout:fixed;width:100%;">
           <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
           <tr><th>Region</th><th style="text-align:right">Diesel</th><th style="text-align:right">Gasoline</th></tr>
-          <tr><td>Gulf Coast</td><td class="price">$3.45</td><td class="price">$3.08</td></tr>
-<tr><td>Midwest</td><td class="price">$3.58</td><td class="price">$3.32</td></tr>
-<tr><td>Lower Atlantic</td><td class="price">$3.62</td><td class="price">$3.28</td></tr>
-<tr><td>Rocky Mountain</td><td class="price">$3.65</td><td class="price">$3.45</td></tr>
-<tr><td>East Coast</td><td class="price">$3.72</td><td class="price">$3.35</td></tr>
-<tr><td>West Coast less CA</td><td class="price">$3.85</td><td class="price">$3.95</td></tr>
-<tr><td>New England</td><td class="price">$3.89</td><td class="price">$3.42</td></tr>
-<tr><td>Central Atlantic</td><td class="price">$3.95</td><td class="price">$3.48</td></tr>
-<tr><td>West Coast</td><td class="price">$4.12</td><td class="price">$4.28</td></tr>
-<tr><td>California</td><td class="price">$4.45</td><td class="price">$4.62</td></tr>
+          <tr><td>Gulf Coast</td><td class="price"><span class="fuel-bar" style="width:77%;background:#15171a;"></span>$3.45</td><td class="price"><span class="fuel-bar" style="width:69%;background:#8b949e;"></span>$3.08</td></tr>
+<tr><td>Midwest</td><td class="price"><span class="fuel-bar" style="width:80%;background:#15171a;"></span>$3.58</td><td class="price"><span class="fuel-bar" style="width:74%;background:#8b949e;"></span>$3.32</td></tr>
+<tr><td>Lower Atlantic</td><td class="price"><span class="fuel-bar" style="width:81%;background:#15171a;"></span>$3.62</td><td class="price"><span class="fuel-bar" style="width:73%;background:#8b949e;"></span>$3.28</td></tr>
+<tr><td>Rocky Mountain</td><td class="price"><span class="fuel-bar" style="width:82%;background:#15171a;"></span>$3.65</td><td class="price"><span class="fuel-bar" style="width:77%;background:#8b949e;"></span>$3.45</td></tr>
+<tr><td>East Coast</td><td class="price"><span class="fuel-bar" style="width:83%;background:#15171a;"></span>$3.72</td><td class="price"><span class="fuel-bar" style="width:75%;background:#8b949e;"></span>$3.35</td></tr>
+<tr><td>West Coast less CA</td><td class="price"><span class="fuel-bar" style="width:86%;background:#15171a;"></span>$3.85</td><td class="price"><span class="fuel-bar" style="width:88%;background:#8b949e;"></span>$3.95</td></tr>
+<tr><td>New England</td><td class="price"><span class="fuel-bar" style="width:87%;background:#15171a;"></span>$3.89</td><td class="price"><span class="fuel-bar" style="width:76%;background:#8b949e;"></span>$3.42</td></tr>
+<tr><td>Central Atlantic</td><td class="price"><span class="fuel-bar" style="width:88%;background:#15171a;"></span>$3.95</td><td class="price"><span class="fuel-bar" style="width:78%;background:#8b949e;"></span>$3.48</td></tr>
+<tr><td>West Coast</td><td class="price"><span class="fuel-bar" style="width:92%;background:#15171a;"></span>$4.12</td><td class="price"><span class="fuel-bar" style="width:96%;background:#8b949e;"></span>$4.28</td></tr>
+<tr><td>California</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>$4.45</td><td class="price"><span class="fuel-bar" style="width:103%;background:#8b949e;"></span>$4.62</td></tr>
 
         </table>
       </div>
@@ -245,16 +246,16 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">IFTA fuel tax rates. Combined rate = state + federal.</div>
         <table class="diesel-table">
           <tr><th>State</th><th style="text-align:right">Diesel Tax</th><th style="text-align:right">Gas Tax</th><th style="text-align:right">Combined</th></tr>
-          <tr><td>CA</td><td class="price">$0.89</td><td class="price">$0.60</td><td class="price">$1.08</td></tr>
-<tr><td>PA</td><td class="price">$0.74</td><td class="price">$0.59</td><td class="price">$0.93</td></tr>
-<tr><td>IL</td><td class="price">$0.63</td><td class="price">$0.67</td><td class="price">$0.82</td></tr>
-<tr><td>IN</td><td class="price">$0.57</td><td class="price">$0.34</td><td class="price">$0.76</td></tr>
-<tr><td>WA</td><td class="price">$0.55</td><td class="price">$0.49</td><td class="price">$0.74</td></tr>
-<tr><td>CT</td><td class="price">$0.54</td><td class="price">$0.25</td><td class="price">$0.73</td></tr>
-<tr><td>NJ</td><td class="price">$0.49</td><td class="price">$0.42</td><td class="price">$0.68</td></tr>
-<tr><td>MI</td><td class="price">$0.48</td><td class="price">$0.45</td><td class="price">$0.67</td></tr>
-<tr><td>OH</td><td class="price">$0.47</td><td class="price">$0.39</td><td class="price">$0.66</td></tr>
-<tr><td>MD</td><td class="price">$0.42</td><td class="price">$0.42</td><td class="price">$0.61</td></tr>
+          <tr><td>CA</td><td class="price"><span class="fuel-bar" style="width:100%;background:#15171a;"></span>$0.89</td><td class="price">$0.60</td><td class="price">$1.08</td></tr>
+<tr><td>PA</td><td class="price"><span class="fuel-bar" style="width:83%;background:#15171a;"></span>$0.74</td><td class="price">$0.59</td><td class="price">$0.93</td></tr>
+<tr><td>IL</td><td class="price"><span class="fuel-bar" style="width:70%;background:#15171a;"></span>$0.63</td><td class="price">$0.67</td><td class="price">$0.82</td></tr>
+<tr><td>IN</td><td class="price"><span class="fuel-bar" style="width:64%;background:#15171a;"></span>$0.57</td><td class="price">$0.34</td><td class="price">$0.76</td></tr>
+<tr><td>WA</td><td class="price"><span class="fuel-bar" style="width:61%;background:#15171a;"></span>$0.55</td><td class="price">$0.49</td><td class="price">$0.74</td></tr>
+<tr><td>CT</td><td class="price"><span class="fuel-bar" style="width:60%;background:#15171a;"></span>$0.54</td><td class="price">$0.25</td><td class="price">$0.73</td></tr>
+<tr><td>NJ</td><td class="price"><span class="fuel-bar" style="width:55%;background:#15171a;"></span>$0.49</td><td class="price">$0.42</td><td class="price">$0.68</td></tr>
+<tr><td>MI</td><td class="price"><span class="fuel-bar" style="width:53%;background:#15171a;"></span>$0.48</td><td class="price">$0.45</td><td class="price">$0.67</td></tr>
+<tr><td>OH</td><td class="price"><span class="fuel-bar" style="width:52%;background:#15171a;"></span>$0.47</td><td class="price">$0.39</td><td class="price">$0.66</td></tr>
+<tr><td>MD</td><td class="price"><span class="fuel-bar" style="width:47%;background:#15171a;"></span>$0.42</td><td class="price">$0.42</td><td class="price">$0.61</td></tr>
 
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:8px;">Showing highest diesel tax states. All 48 contiguous states in data file.</div>
@@ -266,13 +267,7 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
         <table class="diesel-table">
           <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
-          <tr><td>Midwest</td><td>Southeast</td><td class="price">218</td><td class="price">Food products</td></tr>
-<tr><td>Midwest</td><td>Northeast</td><td class="price">145</td><td class="price">Machinery</td></tr>
-<tr><td>Southwest</td><td>Midwest</td><td class="price">132</td><td class="price">Electronics</td></tr>
-<tr><td>Southeast</td><td>Northeast</td><td class="price">128</td><td class="price">Textiles/furniture</td></tr>
-<tr><td>West Coast</td><td>Midwest</td><td class="price">115</td><td class="price">Agricultural products</td></tr>
-<tr><td>Gulf Coast</td><td>Midwest</td><td class="price">98</td><td class="price">Petroleum/chemicals</td></tr>
-
+          {freight_rows}
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
       </div>
