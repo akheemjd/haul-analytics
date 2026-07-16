@@ -49,7 +49,7 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
 .mwrap{display:flex;gap:0;height:380px;overflow:hidden}
-.mmap{flex:1;height:380px;background:#f0f0f0}.mlist{width:300px;height:380px;overflow-y:auto;flex-shrink:0;font-size:12px}
+.mmap{flex:1;height:380px;min-height:380px;width:100%;background:#f0f0f0}.mlist{width:300px;min-width:200px;height:380px;overflow-y:auto;flex-shrink:0;font-size:12px}
 .mitem{padding:7px 10px;border-bottom:1px solid var(--light);cursor:pointer}
 .mitem:hover{background:var(--bg)}
 .mhwy{font-weight:600;color:var(--text)}.mdesc{color:var(--muted);font-size:10px;margin-top:1px}
@@ -310,6 +310,7 @@ var incMap=L.map('inc-map').setView([39.8,-98.5],4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://carto.com/">CARTO</a>'}).addTo(incMap);
 var markers=[];
 fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
+  incMap.invalidateSize();
   var list=document.getElementById('inc-list'),h='';
   incidents.forEach((inc,i)=>{
     if(inc.lat&&inc.lon){
