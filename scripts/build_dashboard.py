@@ -66,7 +66,9 @@ HEAD = """<meta charset="UTF-8">
 <meta name="twitter:description" content="Free live dashboard for US trucking.">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">"""
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="leaflet.css">
+<script src="leaflet.js"></script>"""
 
 market = load('market.json')
 fuel = load('fuel.json')
