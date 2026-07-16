@@ -65,6 +65,8 @@ HEAD = """<meta charset="UTF-8">
 market = load('market.json')
 fuel = load('fuel.json')
 incidents = load('incidents.json')
+weather = load('weather.json')
+fuel_tax = load('fuel_tax.json')
 
 # Market indicators
 market_rows = ''
@@ -95,6 +97,26 @@ for inc in incidents:
     <div style="font-size:11px;color:var(--muted);">{inc['location']} — {inc['description']}</div>
   </div>
 </div>"""
+
+# Weather alerts
+weather_rows = ""
+for a in weather.get('alerts', []):
+    level_color = 'var(--red)' if a.get('level') == 'danger' else 'var(--amber)' if a.get('level') == 'warning' else 'var(--green)'
+    weather_rows += f"""<div class="incident-item">
+  <span class="incident-badge" style="background:{level_color.replace('var(--','').replace(')','')};color:#fff;">{a['corridor']}</span>
+  <div>
+    <strong>{a['city']}</strong> — {a['temp']}°F, {a['conditions']}, wind {a['wind']}mph
+    {f'<div style="font-size:11px;color:var(--red);font-weight:600;">⚠ {a["alert"]}</div>' if a.get('alert') else f'<div style="font-size:11px;color:var(--muted);">Clear. No warnings.</div>'}
+  </div>
+</div>"""
+
+# Fuel tax top states
+tax_states = fuel_tax.get('states', {})
+tax_high = sorted(tax_states.items(), key=lambda x: x[1]['diesel_tax'], reverse=True)[:10]
+tax_low = sorted(tax_states.items(), key=lambda x: x[1]['diesel_tax'])[:5]
+tax_rows = ""
+for code, t in tax_high:
+    tax_rows += f'<tr><td>{code}</td><td class="price">${t["diesel_tax"]:.2f}</td><td class="price">${t["gas_tax"]:.2f}</td><td class="price">${t["total_combined"]:.2f}</td></tr>\n'
 
 html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -139,6 +161,34 @@ html = f"""<!DOCTYPE html>
       <div class="card-body">
         {incident_rows if incident_rows else '<div class="card-body" style="color:var(--muted);">No active incidents reported on monitored highways.</div>'}
         <div style="font-size:10px;color:var(--muted);margin-top:10px;">Monitoring I-5, I-10, I-40, I-70, I-80, I-90, I-95. More highways coming.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full" style="margin-top:14px">
+    <div class="card-header"><h2>Weather Alerts</h2><span class="pill live">Live</span></div>
+    <div class="card-body">
+      """ + weather_rows + """
+      <div style="font-size:10px;color:var(--muted);margin-top:10px;">14 major US trucking corridors. Data from NOAA via Open-Meteo.</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:14px">
+    <div class="card">
+      <div class="card-header"><h2>Diesel Tax by State</h2><span class="pill daily">Reference</span></div>
+      <div class="card-body">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">IFTA fuel tax rates. Combined rate = state + federal.</div>
+        <table class="diesel-table">
+          <tr><th>State</th><th style="text-align:right">Diesel Tax</th><th style="text-align:right">Gas Tax</th><th style="text-align:right">Combined</th></tr>
+          """ + tax_rows + """
+        </table>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;">Showing highest diesel tax states. All 48 contiguous states in data file.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h2>Truck Parking</h2><span class="pill daily">Coming Soon</span></div>
+      <div class="card-body" style="color:var(--muted);padding:20px 0;text-align:center;">
+        Real-time parking availability at major US rest areas and truck stops. DOT data integration in progress.
       </div>
     </div>
   </div>
