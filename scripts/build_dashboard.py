@@ -203,20 +203,21 @@ html = f"""<!DOCTYPE html>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;">
         <div style="flex:1;min-width:120px;">
           <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">From</label>
-          <select id="calc-from" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+          <select id="calc-from" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
             <option value="">Select city</option>
           </select>
         </div>
         <div style="flex:1;min-width:120px;">
           <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">To</label>
-          <select id="calc-to" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+          <select id="calc-to" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
             <option value="">Select city</option>
           </select>
         </div>
         <div style="flex:0.5;min-width:80px;">
           <label style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;">MPG</label>
-          <input type="number" id="calc-mpg" value="6" min="4" max="10" onchange="runCalc()" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
+          <input type="number" id="calc-mpg" value="6" min="4" max="10" style="width:100%;background:var(--bg);border:1px solid var(--light);padding:9px 10px;font-size:13px;font-family:inherit;">
         </div>
+        <button onclick="runCalc()" style="padding:9px 20px;background:var(--text);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;align-self:flex-end;">Calculate</button>
       </div>
       <div id="calc-result" style="padding:14px;background:var(--bg);display:none;">
         <div style="font-size:26px;font-weight:800;color:var(--text);" id="calc-cost">—</div>
