@@ -268,8 +268,9 @@ td{{padding:7px 8px;border-bottom:1px solid #f0f0f0}}
 
 <div class="footer">&copy; 2026 Haul Analytics &middot; Data from BLS, EIA, NOAA, DOT &middot; Informational use only</div>
 
-<script src="distances.json"></script>
+<script>
 ''' + open(os.path.join(BASE, 'scripts/calc.js')).read() + '''
+</script>
 <script>
 // Road incidents map
 var incMap=L.map('inc-map').setView([39.8,-98.5],4);

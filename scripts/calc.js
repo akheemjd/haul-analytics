@@ -4,14 +4,11 @@ let calcDiesel=0;
 
 fetch('data/distances.json').then(r=>r.json()).then(d=>{
   calcDistances=d.distances;
-  const cities=d.cities;
-  ['calc-from','calc-to'].forEach(id=>{
-    const sel=document.getElementById(id);
-    cities.forEach(c=>{
-      const opt=document.createElement('option');
-      opt.value=c.code;opt.textContent=c.name;
-      sel.appendChild(opt);
-    });
+  d.cities.forEach(c=>{
+    var o=document.createElement('option');
+    o.value=c.code;o.textContent=c.name;
+    document.getElementById('cf').appendChild(o.cloneNode(true));
+    document.getElementById('ct').appendChild(o.cloneNode(true));
   });
 });
 
@@ -20,30 +17,28 @@ fetch('data/fuel.json').then(r=>r.json()).then(d=>{
 });
 
 function runCalc(){
-  const from=document.getElementById('calc-from').value;
-  const to=document.getElementById('calc-to').value;
-  const mpg=parseFloat(document.getElementById('calc-mpg').value)||6;
-  const result=document.getElementById('calc-result');
-  const empty=document.getElementById('calc-empty');
-  const cost=document.getElementById('calc-cost');
-  const detail=document.getElementById('calc-detail');
+  var f=document.getElementById('cf').value;
+  var t=document.getElementById('ct').value;
+  var m=parseFloat(document.getElementById('cmpg').value)||6;
+  var r=document.getElementById('cr');
+  var e=document.getElementById('ce');
   
-  if(!from||!to||from===to){
-    result.style.display='none';empty.style.display='block';return;
+  if(!f||!t||f===t){
+    r.className='cresult';e.style.display='block';return;
   }
   
-  const dist=calcDistances[from+'-'+to]||calcDistances[to+'-'+from];
-  if(!dist){
-    result.style.display='none';empty.style.display='block';
-    empty.textContent='Route data not available for this lane yet.';
+  var d=calcDistances[f+'-'+t]||calcDistances[t+'-'+f];
+  if(!d){
+    r.className='cresult';e.style.display='block';
+    e.textContent='Route not available for this lane yet.';
     return;
   }
   
-  const gallons=dist/mpg;
-  const total=gallons*calcDiesel;
+  var g=d/m;
+  var tot=g*calcDiesel;
   
-  cost.textContent='$'+total.toFixed(0);
-  detail.innerHTML='<strong>'+from+'</strong> → <strong>'+to+'</strong><br>'+dist.toLocaleString()+' miles &middot; '+mpg+' MPG &middot; '+gallons.toFixed(1)+' gal &middot; $'+calcDiesel.toFixed(2)+'/gal diesel';
+  document.getElementById('cv').textContent='$'+tot.toFixed(0);
+  document.getElementById('cd').innerHTML='<strong>'+f+'</strong> &rarr; <strong>'+t+'</strong><br>'+d.toLocaleString()+' mi &middot; '+m+' MPG &middot; '+g.toFixed(1)+' gal &middot; $'+calcDiesel.toFixed(2)+'/gal';
   
-  result.style.display='block';empty.style.display='none';
+  r.className='cresult v';e.style.display='none';
 }
