@@ -1,0 +1,22 @@
+{
+  "lanes": [
+    {"origin": "Midwest", "destination": "Southeast", "tons_millions": 218, "top_commodity": "Food products", "growth": "up"},
+    {"origin": "Midwest", "destination": "Northeast", "tons_millions": 145, "top_commodity": "Machinery", "growth": "steady"},
+    {"origin": "Southwest", "destination": "Midwest", "tons_millions": 132, "top_commodity": "Electronics", "growth": "up"},
+    {"origin": "Southeast", "destination": "Northeast", "tons_millions": 128, "top_commodity": "Textiles/furniture", "growth": "down"},
+    {"origin": "West Coast", "destination": "Midwest", "tons_millions": 115, "top_commodity": "Agricultural products", "growth": "up"},
+    {"origin": "Gulf Coast", "destination": "Midwest", "tons_millions": 98, "top_commodity": "Petroleum/chemicals", "growth": "steady"},
+    {"origin": "Midwest", "destination": "Southwest", "tons_millions": 87, "top_commodity": "Mixed freight", "growth": "up"},
+    {"origin": "Northeast", "destination": "Southeast", "tons_millions": 76, "top_commodity": "Pharmaceuticals", "growth": "steady"}
+  ],
+  "mode_share": {
+    "truck": 72.6,
+    "rail": 15.3,
+    "pipeline": 7.1,
+    "water": 3.4,
+    "air": 1.6
+  },
+  "national_total_billion_ton_miles": 5.2,
+  "updated": "2026-07-15",
+  "source": "Bureau of Transportation Statistics, Freight Analysis Framework (2026 estimates)"
+}

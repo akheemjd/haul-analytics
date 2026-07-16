@@ -65,6 +65,7 @@ HEAD = """<meta charset="UTF-8">
 market = load('market.json')
 fuel = load('fuel.json')
 incidents = load('incidents.json')
+commodity = load('commodity.json')
 weather = load('weather.json')
 fuel_tax = load('fuel_tax.json')
 
@@ -186,9 +187,14 @@ html = f"""<!DOCTYPE html>
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>Truck Parking</h2><span class="pill daily">Coming Soon</span></div>
-      <div class="card-body" style="color:var(--muted);padding:20px 0;text-align:center;">
-        Real-time parking availability at major US rest areas and truck stops. DOT data integration in progress.
+      <div class="card-header"><h2>Freight Flows</h2><span class="pill daily">Reference</span></div>
+      <div class="card-body">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Top US freight lanes by volume. Where the freight moves.</div>
+        <table class="diesel-table">
+          <tr><th>Origin</th><th>Destination</th><th style="text-align:right">Tons (M)</th><th style="text-align:right">Top Commodity</th></tr>
+          """ + ''.join([f'<tr><td>{l["origin"]}</td><td>{l["destination"]}</td><td class="price">{l["tons_millions"]}</td><td class="price">{l["top_commodity"]}</td></tr>\n' for l in commodity.get('lanes', [])[:6]]) + """
+        </table>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;">Truck moves 72.6% of all US freight. Source: BTS Freight Analysis Framework.</div>
       </div>
     </div>
   </div>
