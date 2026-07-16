@@ -89,11 +89,13 @@ for i in market.get('indicators', []):
   <div class="ind-meaning">{i.get('what_it_means','')}</div>
 </div>"""
 
-# Diesel table
+# Fuel table
 diesel_rows = ''
 regions = fuel.get('regions', {})
+gas_regions = fuel.get('gas_regions', {})
 for region, price in sorted(regions.items(), key=lambda x: x[1]):
-    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td></tr>\n'
+    gprice = gas_regions.get(region, '—')
+    diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td><td class="price">${gprice:.2f}</td></tr>\\n'
 
 # Incidents data loaded via JS map below
 
@@ -145,12 +147,23 @@ html = f"""<!DOCTYPE html>
 
   <div class="grid grid-2" style="margin-top:14px">
     <div class="card">
-      <div class="card-header"><h2>Diesel Prices</h2><span class="pill live">Weekly</span></div>
+      <div class="card-header"><h2>Fuel Prices</h2><span class="pill live">Weekly</span></div>
       <div class="card-body">
-        <div style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:2px;">${fuel.get('national_avg','—')}/gal</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">US national average &middot; {fuel.get('source','EIA')}</div>
+        <div style="display:flex;gap:20px;margin-bottom:14px;">
+          <div style="flex:1;">
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Diesel</div>
+            <div style="font-size:24px;font-weight:800;color:var(--text);">${fuel.get('national_avg','—')}</div>
+            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Gasoline</div>
+            <div style="font-size:24px;font-weight:800;color:var(--text);">${fuel.get('gasoline_avg','—')}</div>
+            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Regional prices &middot; {fuel.get('source','EIA Weekly Retail')}</div>
         <table class="diesel-table">
-          <tr><th>Region</th><th style="text-align:right">Price</th></tr>
+          <tr><th>Region</th><th style="text-align:right">Diesel</th><th style="text-align:right">Gasoline</th></tr>
           {diesel_rows}
         </table>
       </div>

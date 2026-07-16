@@ -13,5 +13,18 @@
     "West Coast less CA": 3.85
   },
   "updated": "2026-07-15T19:44:24",
-  "source": "EIA Weekly Retail Diesel"
+  "source": "EIA Weekly Retail Diesel",
+  "gasoline_avg": 3.4,
+  "gas_regions": {
+    "East Coast": 3.35,
+    "New England": 3.42,
+    "Central Atlantic": 3.48,
+    "Lower Atlantic": 3.28,
+    "Midwest": 3.32,
+    "Gulf Coast": 3.08,
+    "Rocky Mountain": 3.45,
+    "West Coast": 4.28,
+    "California": 4.62,
+    "West Coast less CA": 3.95
+  }
 }
