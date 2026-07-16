@@ -150,15 +150,17 @@ html = f"""<!DOCTYPE html>
       <div class="card-header"><h2>Fuel Prices</h2><span class="pill live">Weekly</span></div>
       <div class="card-body">
         <div style="display:flex;gap:24px;margin-bottom:14px;text-align:center;">
-          <div style="flex:1;padding:12px 0;background:var(--bg);">
+          <div style="flex:1;padding:14px;background:var(--bg);">
             <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Diesel</div>
             <div style="font-size:26px;font-weight:800;color:var(--text);">${fuel.get('national_avg','—')}</div>
-            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">per gallon national avg</div>
+            <div style="font-size:9px;color:var(--muted);">Low: Gulf Coast $3.45 · High: California $4.45</div>
           </div>
-          <div style="flex:1;padding:12px 0;background:var(--bg);">
+          <div style="flex:1;padding:14px;background:var(--bg);">
             <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Gasoline</div>
             <div style="font-size:26px;font-weight:800;color:var(--text);">${fuel.get('gasoline_avg','—')}</div>
-            <div style="font-size:10px;color:var(--muted);">per gallon</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">per gallon national avg</div>
+            <div style="font-size:9px;color:var(--muted);">Low: Gulf Coast $3.08 · High: California $4.62</div>
           </div>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Regional prices &middot; {fuel.get('source','EIA Weekly Retail')}</div>
