@@ -1,32 +1,10 @@
 [
-  {
-    "highway": "I-80",
-    "state": "PA",
-    "location": "Near Clarion",
-    "type": "Construction",
-    "description": "Lane closure, eastbound. Expect delays.",
-    "status": "active",
-    "lat": 41.2,
-    "lon": -79.4
-  },
-  {
-    "highway": "I-5",
-    "state": "CA",
-    "location": "Grapevine section",
-    "type": "Weather",
-    "description": "High wind warning for high-profile vehicles.",
-    "status": "active",
-    "lat": 34.9,
-    "lon": -118.9
-  },
-  {
-    "highway": "I-10",
-    "state": "TX",
-    "location": "Near Houston",
-    "type": "Accident",
-    "description": "Multi-vehicle crash. Right lane blocked.",
-    "status": "active",
-    "lat": 29.8,
-    "lon": -95.4
-  }
+  {"highway":"I-80","state":"PA","type":"Construction","description":"Lane closure eastbound near Clarion. Expect 20 min delays.","lat":41.2,"lon":-79.4},
+  {"highway":"I-5","state":"CA","type":"Weather","description":"High wind warning for high-profile vehicles at Grapevine.","lat":34.9,"lon":-118.9},
+  {"highway":"I-10","state":"TX","type":"Accident","description":"Multi-vehicle crash near Houston. Right lane blocked.","lat":29.8,"lon":-95.4},
+  {"highway":"I-70","state":"CO","type":"Construction","description":"Bridge work near Vail. Single lane alternating.","lat":39.6,"lon":-106.4},
+  {"highway":"I-95","state":"FL","type":"Accident","description":"Jackknifed truck near Jacksonville. Northbound closed.","lat":30.3,"lon":-81.7},
+  {"highway":"I-40","state":"NM","type":"Weather","description":"Dust storm warning. Low visibility near Tucumcari.","lat":35.2,"lon":-103.7},
+  {"highway":"I-90","state":"MT","type":"Construction","description":"Pavement repair near Billings. Speed reduced to 45 mph.","lat":45.8,"lon":-108.5},
+  {"highway":"I-35","state":"TX","type":"Accident","description":"Overturned tanker near Austin. HAZMAT crew on scene.","lat":30.3,"lon":-97.7}
 ]

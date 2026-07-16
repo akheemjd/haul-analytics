@@ -44,6 +44,12 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
 .incident-item{padding:10px 0;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:flex-start}
 .incident-badge{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
 .i-accident{background:#fee2e2;color:var(--red)}.i-weather{background:#dbeafe;color:#2563eb}.i-construction{background:#fef3c7;color:var(--amber)}
+.mwrap{display:flex;gap:0;height:380px;overflow:hidden}
+.mmap{flex:1;height:380px;background:#f0f0f0}.mlist{width:300px;height:380px;overflow-y:auto;flex-shrink:0;font-size:12px}
+.mitem{padding:7px 10px;border-bottom:1px solid var(--light);cursor:pointer}
+.mitem:hover{background:var(--bg)}
+.mhwy{font-weight:600;color:var(--text)}.mdesc{color:var(--muted);font-size:10px;margin-top:1px}
+@media(max-width:700px){.mwrap{flex-direction:column;height:auto!important}.mmap{height:260px!important}.mlist{width:100%;height:220px!important}
 @media(max-width:700px){body{font-size:15px}.main{padding:10px 8px 30px}.grid,.grid-2{grid-template-columns:1fr;gap:10px}.card{padding:14px}.inds{grid-template-columns:1fr}.card-header h2{font-size:14px}}"""
 
 HEAD = """<meta charset="UTF-8">
@@ -87,17 +93,7 @@ regions = fuel.get('regions', {})
 for region, price in sorted(regions.items(), key=lambda x: x[1]):
     diesel_rows += f'<tr><td>{region}</td><td class="price">${price:.2f}</td></tr>\n'
 
-# Incidents
-incident_rows = ''
-for inc in incidents:
-    badge_class = {'Accident':'i-accident','Weather':'i-weather','Construction':'i-construction'}.get(inc.get('type',''), 'i-accident')
-    incident_rows += f"""<div class="incident-item">
-  <span class="incident-badge {badge_class}">{inc['type']}</span>
-  <div>
-    <strong>{inc['highway']} — {inc['state']}</strong>
-    <div style="font-size:11px;color:var(--muted);">{inc['location']} — {inc['description']}</div>
-  </div>
-</div>"""
+# Incidents data loaded via JS map below
 
 # Weather alerts
 weather_rows = ""
@@ -157,13 +153,13 @@ html = f"""<!DOCTYPE html>
         </table>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header"><h2>Road Incidents</h2><span class="pill live">Live</span></div>
-      <div class="card-body">
-        {incident_rows if incident_rows else '<div class="card-body" style="color:var(--muted);">No active incidents reported on monitored highways.</div>'}
-        <div style="font-size:10px;color:var(--muted);margin-top:10px;">Monitoring I-5, I-10, I-40, I-70, I-80, I-90, I-95. More highways coming.</div>
-      </div>
+  <div class="card full" style="margin-top:14px">
+    <div class="card-header"><h2>Road Incidents</h2><span class="pill live">Live</span></div>
+    <div class="card-body">
+      <div class="mwrap"><div class="mmap" id="inc-map"></div><div class="mlist" id="inc-list"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;">Monitoring major US highways. Data from state DOT systems.</div>
     </div>
+  </div>
   </div>
 
   <div class="card full" style="margin-top:14px">
@@ -238,6 +234,24 @@ html = f"""<!DOCTYPE html>
 </footer>
 
 <script src="calc.js"></script>
+<script>
+// Road incidents map
+var incMap=L.map('inc-map').setView([39.8,-98.5],4);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://carto.com/">CARTO</a>'}).addTo(incMap);
+var markers=[];
+fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
+  var list=document.getElementById('inc-list'),h='';
+  incidents.forEach((inc,i)=>{
+    if(inc.lat&&inc.lon){
+      var m=L.marker([inc.lat,inc.lon]).addTo(incMap).bindPopup('<strong>'+inc.highway+'</strong><br>'+inc.state+' — '+inc.description);
+      markers.push(m);
+      h+='<div class="mitem" onclick="incMap.setView(['+inc.lat+','+inc.lon+'],10);markers['+i+'].openPopup()"><div class="mhwy">'+inc.highway+' — '+inc.state+'</div><div class="mdesc">'+inc.type+' — '+inc.description+'</div></div>';
+    }
+  });
+  if(!h)h='<div style="padding:10px;color:var(--muted);">No active incidents on monitored highways.</div>';
+  list.innerHTML=h;
+}).catch(()=>{document.getElementById('inc-list').innerHTML='<div style="padding:10px;color:var(--muted);">Incident data loading...</div>'});
+</script>
 </body>
 </html>"""
 
