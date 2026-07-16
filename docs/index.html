@@ -105,20 +105,21 @@ body{background:#fff;color:var(--text);font-family:'Fira Sans',-apple-system,Bli
     <div class="card">
       <div class="card-header"><h2>Fuel Prices</h2><span class="pill live">Weekly</span></div>
       <div class="card-body">
-        <div style="display:flex;gap:20px;margin-bottom:14px;">
-          <div style="flex:1;">
-            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Diesel</div>
-            <div style="font-size:24px;font-weight:800;color:var(--text);">$3.83</div>
+        <div style="display:flex;gap:24px;margin-bottom:14px;text-align:center;">
+          <div style="flex:1;padding:12px 0;background:var(--bg);">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Diesel</div>
+            <div style="font-size:26px;font-weight:800;color:var(--text);">$3.83</div>
             <div style="font-size:10px;color:var(--muted);">per gallon</div>
           </div>
-          <div style="flex:1;">
-            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Gasoline</div>
-            <div style="font-size:24px;font-weight:800;color:var(--text);">$3.4</div>
+          <div style="flex:1;padding:12px 0;background:var(--bg);">
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Gasoline</div>
+            <div style="font-size:26px;font-weight:800;color:var(--text);">$3.4</div>
             <div style="font-size:10px;color:var(--muted);">per gallon</div>
           </div>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Regional prices &middot; EIA Weekly Retail Diesel</div>
-        <table class="diesel-table">
+        <table class="diesel-table" style="table-layout:fixed;width:100%;">
+          <colgroup><col style="width:40%"><col style="width:30%"><col style="width:30%"></colgroup>
           <tr><th>Region</th><th style="text-align:right">Diesel</th><th style="text-align:right">Gasoline</th></tr>
           <tr><td>Gulf Coast</td><td class="price">$3.45</td><td class="price">$3.08</td></tr>
 <tr><td>Midwest</td><td class="price">$3.58</td><td class="price">$3.32</td></tr>
