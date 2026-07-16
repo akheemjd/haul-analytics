@@ -239,7 +239,7 @@ html = f"""<!DOCTYPE html>
 <script>
 // Road incidents map
 var incMap=L.map('inc-map').setView([39.8,-98.5],4);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://carto.com/">CARTO</a>'}).addTo(incMap);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(incMap);
 var markers=[];
 fetch('data/incidents.json').then(r=>r.json()).then(incidents=>{
   incMap.invalidateSize();
